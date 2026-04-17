@@ -1,6 +1,6 @@
 # CIS Architecture Decision Records
 
-Phase PD — Pre-Development Harness
+Phase PD + Phase 0 — Pre-Development Harness + Execution Layer
 Last updated: 2026-04-17
 
 ---
@@ -12,10 +12,10 @@ Last updated: 2026-04-17
 
 ---
 
-## ADR-002 — vLLM is the runtime for local model serving
+## ADR-002 — vLLM was the original runtime target (superseded by ADR-009)
 **Status:** Locked
-**Decision:** vLLM 0.19.0 serves the Qwen2.5-VL-32B model locally on the RTX 4090. Runtime environment lives at /mnt/models/vllm-env.
-**Rationale:** vLLM was validated during Phase D testing. Successfully served 32B model within 24GB VRAM using gpu-memory-utilization 0.85.
+**Decision:** vLLM 0.19.0 was the intended runtime for local model serving.
+**Rationale:** vLLM was validated during Phase D testing but cannot load full bfloat16 weights within 24GB VRAM. Superseded by ADR-009.
 
 ---
 
@@ -36,7 +36,7 @@ Last updated: 2026-04-17
 ## ADR-005 — knowledge_record v1 is the canonical output schema
 **Status:** Locked
 **Decision:** All extraction outputs must conform to the knowledge_record v1 schema defined in MASTER_ARCHITECTURE_MAP. JSON is canonical, markdown is the human-readable mirror.
-**Rationale:** One validated record exists proving the schema works: KNOWLEDGE__DOC__COMICS__amazing_adventures_015__001.
+**Rationale:** One validated record exists proving the schema works: KNOWLEDGE__IMAGE__WEIRD_WAR_TALES_COVER__001__001.
 
 ---
 
@@ -44,3 +44,69 @@ Last updated: 2026-04-17
 **Status:** Locked
 **Decision:** Extraction runs three passes: Pass 1 extracts raw signal, Pass 2 enforces constraints and removes hallucinations, Pass 3 normalizes to canonical schema.
 **Rationale:** Single-pass extraction with all models tested produced schema drift, hallucinations, and ungrounded output. Multi-pass harness is the quality gate.
+
+---
+
+## ADR-007 — Source manifest is the control object for all intake
+**Status:** Locked
+**Decision:** Every ingested source receives a manifest.json before any processing begins. The manifest tracks source identity, file hash, project link, status, and full state history.
+**Rationale:** The manifest is the single source of truth for a source object. No processing step may run without a valid manifest in place.
+
+---
+
+## ADR-008 — Qwen2.5-VL-32B full bfloat16 weights cannot load on RTX 4090
+**Status:** Locked
+**Decision:** The full bfloat16 weights at 64GB cannot be loaded on a 24GB GPU. FP8 on-the-fly quantization is also insufficient. 4-bit bitsandbytes quantization via transformers is required.
+**Rationale:** Two vLLM load attempts failed. FP8 attempt loaded 11/18 shards then OOM. 4-bit via transformers succeeded.
+
+---
+
+## ADR-009 — Transformers + bitsandbytes is the runtime for 32B model inference
+**Status:** Locked
+**Decision:** Qwen2.5-VL-32B runs via transformers library with 4-bit bitsandbytes quantization using device_map=auto. vLLM cannot load the full bfloat16 weights within 24GB VRAM.
+**Rationale:** Proven on April 12 2026: 21.3GB VRAM, 74% GPU-Util, 237W power draw. Environment at /home/eric/gpu-test with bitsandbytes 0.49.2.
+
+---
+
+## ADR-010 — cis_extract requires gpu-test env and PYTORCH_ALLOC_CONF flag
+**Status:** Locked
+**Decision:** cis_extract.py must be invoked with full gpu-test Python path and PYTORCH_ALLOC_CONF=expandable_segments:True to avoid VRAM fragmentation during generation.
+**Rationale:** Failed without flag. Succeeded with: PYTORCH_ALLOC_CONF=expandable_segments:True /home/eric/gpu-test/bin/python3 cis_extract.py
+
+**Invocation:**
+```
+PYTORCH_ALLOC_CONF=expandable_segments:True \
+  /home/eric/gpu-test/bin/python3 \
+  /mnt/projects/cis/runtime/cis_extract.py <source_id>
+```
+
+---
+
+## ADR-011 — Comic illustration requires ambiguity-aware extraction standards
+**Status:** Locked
+**Decision:** Golden and Silver Age comic illustration uses visual shorthand and symbolic compression designed for human readers fluent in the genre. Models will encounter genuine ambiguity that humans resolve through cultural literacy. Extraction quality should be evaluated against this baseline, not against photographic clarity standards.
+**Rationale:** Observed during first pipeline extraction: impact strokes around rifle/axe collision caused misidentification even on repeated human review. Uncertainty field must surface these ambiguities rather than defaulting to None.
+
+---
+
+## ADR-012 — Phase 0 execution layer is proven
+**Status:** Locked
+**Decision:** Five commands complete the intake-to-record pipeline: cis_intake, cis_classify, cis_preprocess, cis_extract, cis_normalize. Full run validated on real archive material producing a canonical knowledge_record.
+**Rationale:** Weird War Tales cover processed end to end. Record at IMAGE__WEIRD_WAR_TALES_COVER__001/record_001.json. Status: draft, awaiting review.
+
+---
+
+## Pipeline Command Reference
+
+### Standard pipeline sequence
+```
+cis-intake <file_path>
+cis-classify <source_id>
+cis-preprocess <source_id>
+PYTORCH_ALLOC_CONF=expandable_segments:True /home/eric/gpu-test/bin/python3 /mnt/projects/cis/runtime/cis_extract.py <source_id>
+cis-normalize <source_id>
+python3 /mnt/projects/cis/runtime/cis_review.py <source_id>
+```
+
+### State progression
+arrived → classified → preprocessed → extracted → draft → checked → approved → locked
