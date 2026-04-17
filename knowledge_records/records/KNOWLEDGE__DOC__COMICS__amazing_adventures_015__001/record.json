@@ -1,0 +1,31 @@
+{
+  "record_id": "KNOWLEDGE__DOC__COMICS__amazing_adventures_015__001",
+  "record_type": "knowledge_record",
+  "title": "Amazing Adventures 015 Cover",
+  "source_type": "pdf",
+  "source_name": "source",
+  "source_path": "/mnt/projects/cis/knowledge/records/KNOWLEDGE__DOC__COMICS__amazing_adventures_015__001/source",
+  "source_unit": "cover",
+  "knowledge_category": "reference",
+  "subject": "comics",
+  "tags": [
+    "marvel",
+    "beast",
+    "cover",
+    "superhero"
+  ],
+  "summary": "The image is a comic book cover from \"Amazing Adventures\" featuring \"The Beast.\" It shows a character with a lion-like appearance, wearing a red and blue costume with yellow gloves and boots, flying above a cityscape. The character has wings and a fierce expression. Speech bubbles read, \"All right, I'm gonna take off the angel wings off the Angel!\" and \"Now it's time to fly!\" Below, the text reads, \"The Coming of... The Griffin!\" The top of the image has \"Marvel Comics Group\" and \"Amazing Adventures\" with a price of 115\u00a2. The background shows a stylized city with buildings.",
+  "retrieval_text": "The image is a comic book cover from \"Amazing Adventures\" featuring \"The Beast.\" It shows a character with a lion-like appearance, wearing a red and blue costume with yellow gloves and boots, flying above a cityscape. The character has wings and a fierce expression. Speech bubbles read, \"All right, I'm gonna take off the angel wings off the Angel!\" and \"Now it's time to fly!\" Below, the text reads, \"The Coming of... The Griffin!\" The top of the image has \"Marvel Comics Group\" and \"Amazing Adventures\" with a price of 115\u00a2. The background shows a stylized city with buildings.",
+  "project_id": null,
+  "project_title": null,
+  "active_stages": [
+    "image"
+  ],
+  "source_origin": "local",
+  "model_used": "InternVL3-8B",
+  "created_at": "2026-04-12T21:27:44.193441Z",
+  "updated_at": "2026-04-12T21:27:44.193468Z",
+  "status": "draft",
+  "version": "v1",
+  "is_current": true
+}
