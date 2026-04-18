@@ -19,6 +19,9 @@ I was going to bring up this iss
 I was going to bring up this iss
 
 ### Round 4 — 2026-04-18 23:34
+### Round 5 — 2026-04-18 23:38
+[YOU]: I wanted to bring up the issue of auto numbering the problems as they are created. I think numbering them to prepend them or make a header like the rounds are numbered would help the user
+
 ---
 
 ## test 3 — 2026-04-18 23:04 [OPEN]
