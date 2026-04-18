@@ -5,6 +5,11 @@ Format: Bullets | 15 lines max | Newest first | Ends with ACTION
 Problem: I would also not like to scroll to paste to the rounds
 Tags: right, sidebar
 
+### Round 1 — 2026-04-18 23:22
+[YOU]: Round 1 │ scroll needed) │ │ Round 2 │ │ │ Round 3...
+
+I was going to bring up this iss
+
 ---
 
 ## test 3 — 2026-04-18 23:04 [OPEN]
