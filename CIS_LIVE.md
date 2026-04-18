@@ -1,6 +1,12 @@
 # CIS_LIVE — Active Scratchpad
 Format: Bullets | 15 lines max | Newest first | Ends with ACTION
 
+## Rounds in Right Sidebar — 2026-04-18 23:17 [OPEN]
+Problem: I would also not like to scroll to paste to the rounds
+Tags: right, sidebar
+
+---
+
 ## test 3 — 2026-04-18 23:04 [OPEN]
 Problem: CIS LIVE not working test 3
 Tags: test three tag
