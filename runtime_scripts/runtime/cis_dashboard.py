@@ -283,7 +283,11 @@ def api_session_close():
     notes      = data.get("notes", "").strip()
     if not focus or not completed or not next_steps:
         return jsonify({"success": False, "error": "focus, completed, and next_steps are required"}), 400
-    results = {}
+
+    results  = {}
+    step_log = []
+
+    # ── Step 1: Write session record to DB ────────────────────────────────────
     conn = db_connect()
     ensure_tables(conn)
     try:
@@ -294,10 +298,104 @@ def api_session_close():
         )
         conn.commit()
         results["session_logged"] = True
+        step_log.append("✓ Session logged to database")
     except Exception as e:
         results["session_logged"] = False
         results["session_error"] = str(e)
+        step_log.append(f"✗ Session log failed: {e}")
+
+    # ── Step 2: Regenerate ADRs.md from decisions table ───────────────────────
+    try:
+        rows = conn.execute(
+            "SELECT decision_number, title, description, rationale, status, created_at "
+            "FROM decisions ORDER BY id ASC"
+        ).fetchall()
+        adrs_lines = [
+            "# CIS Architecture Decision Records",
+            f"Last updated: {today()}",
+            "---",
+        ]
+        for r in rows:
+            adrs_lines += [
+                f"## {r['decision_number']} — {r['title']}",
+                f"**Status:** {r['status'].capitalize()}",
+                f"**Decision:** {r['description']}",
+                f"**Rationale:** {r['rationale']}",
+                "---",
+            ]
+        adrs_path = VAULT_DIR / "Phase_PD" / "ADRs.md"
+        adrs_path.write_text("\n".join(adrs_lines), encoding="utf-8")
+        results["adrs_regenerated"] = True
+        step_log.append(f"✓ ADRs.md regenerated ({len(rows)} decisions)")
+    except Exception as e:
+        results["adrs_error"] = str(e)
+        step_log.append(f"✗ ADRs.md failed: {e}")
+
     conn.close()
+
+    # ── Step 3: Sync knowledge records to vault ───────────────────────────────
+    try:
+        kr_vault = VAULT_DIR / "knowledge_records"
+        kr_vault.mkdir(exist_ok=True)
+        result = run_command(f"cp -r {RECORDS_ROOT}/. {kr_vault}/", timeout=30)
+        if result["success"]:
+            step_log.append("✓ Knowledge records synced to vault")
+        else:
+            step_log.append(f"✗ Knowledge records sync failed: {result['stderr']}")
+    except Exception as e:
+        step_log.append(f"✗ Knowledge records sync error: {e}")
+
+    # ── Step 4: Sync projects folder to vault ─────────────────────────────────
+    try:
+        proj_vault = VAULT_DIR / "projects"
+        proj_vault.mkdir(exist_ok=True)
+        result = run_command(f"cp -r {PROJECTS_DIR}/. {proj_vault}/", timeout=30)
+        if result["success"]:
+            step_log.append("✓ Projects folder synced to vault")
+        else:
+            step_log.append(f"✗ Projects sync failed: {result['stderr']}")
+    except Exception as e:
+        step_log.append(f"✗ Projects sync error: {e}")
+
+    # ── Step 5: Sync runtime scripts to vault ─────────────────────────────────
+    try:
+        mem_vault  = VAULT_DIR / "runtime_scripts" / "memory"
+        run_vault  = VAULT_DIR / "runtime_scripts" / "runtime"
+        mem_vault.mkdir(parents=True, exist_ok=True)
+        run_vault.mkdir(parents=True, exist_ok=True)
+        r1 = run_command(f"cp {PROJECTS_ROOT}/memory/cis_harness.py {mem_vault}/", timeout=15)
+        r2 = run_command(f"cp {PROJECTS_ROOT}/memory/cis_log.py {mem_vault}/", timeout=15)
+        r3 = run_command(f"cp {PROJECTS_ROOT}/memory/create_db.py {mem_vault}/", timeout=15)
+        r4 = run_command(f"cp {RUNTIME_DIR}/cis_intake.py {run_vault}/", timeout=15)
+        r5 = run_command(f"cp {RUNTIME_DIR}/cis_classify.py {run_vault}/", timeout=15)
+        r6 = run_command(f"cp {RUNTIME_DIR}/cis_preprocess.py {run_vault}/", timeout=15)
+        r7 = run_command(f"cp {RUNTIME_DIR}/cis_extract.py {run_vault}/", timeout=15)
+        r8 = run_command(f"cp {RUNTIME_DIR}/cis_normalize.py {run_vault}/", timeout=15)
+        r9 = run_command(f"cp {RUNTIME_DIR}/cis_review.py {run_vault}/", timeout=15)
+        r10 = run_command(f"cp {RUNTIME_DIR}/cis_dashboard.py {run_vault}/", timeout=15)
+        r11 = run_command(f"cp {RUNTIME_DIR}/cis_dashboard.html {run_vault}/", timeout=15)
+        step_log.append("✓ Runtime scripts synced to vault")
+    except Exception as e:
+        step_log.append(f"✗ Runtime scripts sync error: {e}")
+
+    # ── Step 6: Append to system_log.md ──────────────────────────────────────
+    try:
+        system_log_path = PROJECTS_ROOT / "logs" / "system_log.md"
+        entry = (
+            f"\n## {ts()[:16].replace('T', ' ')} UTC — SESSION CLOSE\n"
+            f"- Focus: {focus}\n"
+            f"- Completed: {completed[:120]}{'...' if len(completed) > 120 else ''}\n"
+            f"- Next: {next_steps[:120]}{'...' if len(next_steps) > 120 else ''}\n"
+        )
+        with open(system_log_path, "a", encoding="utf-8") as f:
+            if system_log_path.stat().st_size == 0 if system_log_path.exists() else True:
+                f.write("# CIS System Log\nAppend-only record of all system actions.\n\n")
+            f.write(entry)
+        step_log.append("✓ system_log.md updated")
+    except Exception as e:
+        step_log.append(f"✗ system_log.md failed: {e}")
+
+    # ── Step 7: Write handoff markdown ────────────────────────────────────────
     handoff_content = f"""# CIS Session Handoff
 ## Date: {today()}
 
@@ -313,6 +411,9 @@ def api_session_close():
 ## Notes
 {notes or '—'}
 
+## Sync Status
+{chr(10).join(step_log)}
+
 ## How to start next session
 Run on Ubuntu VM:
 ```
@@ -325,14 +426,32 @@ Paste output as first message in new chat along with this handoff document.
     try:
         handoff_path.write_text(handoff_content, encoding="utf-8")
         results["handoff_written"] = str(handoff_path)
+        step_log.append("✓ Handoff document written")
     except Exception as e:
         results["handoff_error"] = str(e)
+        step_log.append(f"✗ Handoff write failed: {e}")
+
     results["handoff_content"] = handoff_content
+
+    # ── Step 8: Git commit and push ───────────────────────────────────────────
     git_cmd = (
         f"cd {VAULT_DIR} && git add -A && "
         f"git commit -m 'Session close: {focus}' && git push"
     )
-    results["git"] = run_command(git_cmd, timeout=60)
+    git_result = run_command(git_cmd, timeout=60)
+    results["git"] = git_result
+    if git_result["success"]:
+        step_log.append("✓ Git committed and pushed")
+    else:
+        # Nothing to commit is not a real error
+        if "nothing to commit" in git_result["stdout"] + git_result["stderr"]:
+            step_log.append("✓ Git — nothing new to commit")
+            results["git"]["success"] = True
+        else:
+            step_log.append(f"✗ Git failed: {git_result['stderr']}")
+
+    results["step_log"] = step_log
+    results["success"]  = True
     return jsonify(results)
 
 @app.route("/api/session/recent")

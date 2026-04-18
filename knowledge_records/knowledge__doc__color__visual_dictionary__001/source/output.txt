@@ -1,0 +1,656 @@
+VISUAL DICTIONARY
+OF COLOUR
+Colour Society of Australia NSW Division
+International Colour Day exhibit,
+National Art School, Sydney,
+March 21st - 24th 2017
+Text: Dr David Briggs, Chairperson,
+NSW Division, Colour Society of Australia
+
+Effective thinking and communication about colour depends on the existence of a
+mutually agreed and unambiguous vocabulary. For fundamental terms relating to
+what colour is and how it can be described and specified, by far the most
+comprehensive and authoritative standard is the International Lighting Vocabulary
+of the International Commission on Illumination (CIE, 2011)1. However the verbal
+CIE definitions, including those of the six fundamental perceived colour attributes of
+hue, brightness, lightness, colourfulness, chroma and saturation, can be difficult for
+non-specialists to understand without additional explanation and illustration. In
+addition, the CIE definitions do not cover many terms relating to applied colour that
+are important to artists and designers. For such terms we often must acknowledge a
+number of conflicting usages associated with different traditions .
+To celebrate International Colour Day 2017 the NSW Division of the Colour Society
+of Australia produced an exhibit on the theme Visual Dictionary of Colour at the
+National Art School, Darlinghurst, Sydney. The bulk of the works to be exhibited
+were produced by students at the National Art School in the Visual Dictionary of
+Colour workshop that I conducted there in Margaret Olley Drawing Week at the start
+of the academic year. The brief of the workshop was to contribute to an exhibition
+illustrating specific colour-related terms using media of the students’ choice,
+including drawing, painting, photography, digital illustration and 3D models. The
+student works were supplemented with some digital illustrations made by myself for
+a chapter on Colour Spaces for the forthcoming Routledge Handbook of Philosophy
+of Colour, and for my website The Dimensions of Colour
+(www.huevaluechroma.com), and also with student exercises and teaching
+demonstrations associated with the history of the National Art School.
+The Colour Society is very grateful to the staff of the National Art School for their
+assistance with the workshop and the exhibit, especially to Head of Drawing Dr
+Maryanne Coutts for making available a space for the exhibit, to NAS archivist
+Deborah Beck for making historical items available for photography and display, to
+artist and teacher Jocelyn Maughan for permitting me to photograph many of her
+teaching materials, and to the students from my workshop and Public Programs
+classes at the National Art School who loaned their works for the exhibit. Materials
+from the National Art School Collection are reproduced here by kind permission of
+NAS archivist, Deborah Beck.
+David Briggs
+1International Commission on Illumination/ Commission Internationale de L’Eclairage, (2011).
+
+International Lighting Vocabulary. CIE S 017/E:2011. Searchable online at http://eilv.cie.co.at/
+
+CONTENTS
+Part 1: What is a Colour?
+
+3
+
+Colour (definition); perceived colour and psychophysical colour; metamerism;
+spectrum; spectral reflectance; illuminant; simultaneous contrast.
+Part 2: The Attributes of Perceived Colour
+
+13
+
+Lightness; value study; hue; unique hue; student hue circle exercises; chroma;
+brightness and colourfulness; saturation; blackness; brilliance.
+Part 3: Applied Colour
+
+32
+
+Colour space; Munsell system; digital colour spaces; value key; value interval;
+value chord; colour chord; discord; monochromatic, analogous and complementary
+colour schemes; triadic and tetradic schemes; restricted gamut; NCS nuance; tints
+and shades; washes and glazes; subtractive mixing; subtractive primary hues;
+colourant mixing paths.
+Part 4: Historical Student Exercises from the NAS Archive
+
+55
+
+PART 1: WHAT IS A COLOUR?
+Colour
+Colour (perceived): "characteristic of visual perception that can be described by
+attributes of hue, brightness (or lightness) and colourfulness (or saturation or
+chroma)" (CIE, 2011, 17-198).
+Colour (psychophysical): "specification of a colour stimulus in terms of
+operationally defined values, such as 3 tristimulus values”1 (CIE, 2011, 17-197).
+The view of the fundamental nature of colour embodied in the CIE definitions quoted
+above may be said to have three elements. First, qualities of colour such as hue,
+lightness and chroma are attributes of visual perception. Second, we must make a
+distinction between colour perceptions and the properties of lights and objects that
+we see as their colour. Third, the property of a light or an object that we perceive as
+its particular colour is a psychophysical property, meaning that it is not simply
+physical, but involves the perceiver as well as the stimulus in its definition.
+1Tristimulus values are in turn defined as the "amounts of the 3 reference colour stimuli, in a given
+
+trichromatic system, required to match the colour of the stimulus considered" (CIE, 2011, 17-1345).
+
+Perceived Colour and
+Psychophysical Colour
+The distinction between colour perceptions and the properties of lights and objects
+that we see as colour can be traced back to antiquity via Descartes, Locke and
+Galileo, but begins in substantial detail with Sir Isaac Newton's researches into the
+physical basis of colour. In the well-known passage from his Opticks (1704) shown
+below Newton explicitly distinguishes between colour as a psychological perception
+("sensation") and the properties we call colours "in the rays" and "in the object".
+Below: Extract from Newton’s Opticks (1704).
+
+Metamerism
+For Newton, colours “in the rays” are their "power" or "disposition" to be seen as this
+or that perceived colour, which for an isolated light depends on the relative balance
+of the component "rays" (we would now say wavelengths), represented
+approximately by their "center of gravity" in his colour circle (Fig. 7.1.5). This
+position is neither a purely physical nor a purely psychological property, but involves
+a relation between the two, now called psychophysical. A psychophysical colour
+specification represents a class of physically varied stimuli that are indistinguishable
+to an observer, such as the CIE 1931 standard colorimetric observer.
+As Newton’s diagram implies, most colours of light can be evoked by many different
+combinations of "rays" having the same centre of gravity. This means that a given
+colour of light does not correspond to a single physical combination of "rays" but to a
+whole class of combinations (we would now say spectral power distributions, Fig.
+1.2.3) that happen to be indistinguishable to the human visual system. We now call
+members of such a class metameric, and believe that they are indistinguishable to
+human vision because they evoke the same relative response of the three cone cell
+types on which our colour vision depends.
+Below: 1. Newton hue circle (David Briggs, The Dimensions of Colour,
+www.huevaluechroma.com/071.php). 2. Three metameric “warm white” lights in the CIE xy
+chromaticity diagram, a modern descendant of Newton’s circle (David Briggs, The Dimensions of
+Colour, www.huevaluechroma.com/012.php).
+
+Spectrum
+Spectrum: term originally introduced by Newton for the rainbow-like band of light
+produced by splitting a beam of sunlight using a prism.
+Newton’s solar spectrum, like the spectrum of the filtered incandescent bulb of a 35
+mm slide projector (below), shows a relatively smooth distribution of energy (called a
+spectral power distribution). Other white light sources such as fluorescent tubes
+have a much more “spiky” spectral power distribution (see under Metamerism),
+producing a spectrum of discrete coloured bands.
+Below: 1. Photograph of the spectrum of a 35 slide projector by Clayton Croker, Visual Dictionary of
+Colour workshop, 2017. 2. Spectrum painted in watercolour washes by Peta Minnici, Visual
+Dictionary of Colour workshop, 2017.
+
+Spectral Reflectance
+Spectral reflectance: reflectance of an object at each wavelength of the spectrum.
+Newton also discovered that the particular colour of an object depends on the
+object's "disposition to reflect this or that sort of rays more copiously than the rest".
+We now call this disposition its spectral reflectance). As with colours of light, a whole
+class of spectral reflectances are indistinguishable (metameric) to the human visual
+system under the same illumination, so that the particular colours of objects are also
+psychophysical rather than purely physical properties.
+By shining a spectrum onto paint samples it is possible to directly demonstrate which
+wavelengths each paint samples reflects and which wavelengths it absorbs. For
+example, all bright yellow paints efficiently reflect most of the red, orange, yellow
+and green wavelengths that fall on them.
+Below: Red, yellow, green, blue and magenta paint samples under white light (above) and under the
+spectrum of a 35 mm slide projector (below), photographed by Clayton Croker and Jess Amos Visual
+Dictionary of Colour workshop, 2017.
+
+Illuminant
+Illuminant: radiation with a relative spectral power distribution defined over the
+wavelength range that influences object colour perception. NOTE In everyday
+English this term is not restricted to this sense, but is also used for any kind of light
+falling on a body or scene (CIE 2011, 17-554).
+The reflectance of an object depends on the product of the balance of wavelengths
+(spectral power distribution) of the light source (illuminant) and the spectral
+reflectance of the object. The effects of coloured illumination follow the principles of
+subtractive mixing, since only wavelengths present in the light source and not
+absorbed by the surface can be reflected. Coloured lighting tends to neutralize and
+darken complementary-coloured surfaces, while similar coloured objects increase in
+lightness relative to neutral objects. Colours also shift towards the hue of the
+coloured light.
+Below: Six coloured spheres under different coloured illuminants, photographed by Clayton Croker,
+Visual Dictionary of Colour workshop, 2017.
+
+Simultaneous Contrast
+Simultaneous contrast: change in perceived colour when two areas with the same
+colour specification (psychophysical colour) are placed in different surrounds. In
+simultaneous contrast the perceived colour of an area tends to move away from the
+colour of the surround in hue, value and/or chroma.
+Below: 1. Two squares having the same psychophysical colour specification (R180 G108 B108 as an
+sRGB screen colour, 5R 5/6 as a Munsell notation) have different perceived colours when viewed in
+different contexts (A) but match when viewed in the same context (B) (David Briggs, Colour Spaces in
+Routledge Handbook of Philosophy of Colour, in press).
+2,3. Demonstrations of simultaneous contrast using gouache. The same paint colour appears darker
+against a light background and lighter against a dark background. Elizabeth Creixell, Visual
+Dictionary of Colour workshop, 2017.
+
+PART 2: THE ATTRIBUTES OF
+PERCEIVED COLOUR
+The six attributes mentioned in the definition of perceived colour - hue, brightness,
+lightness, colourfulness, saturation and chroma - are all defined perceptually, that
+is, as attributes of visual perception rather than as physical properties of lights or
+objects. None of the six are alternative names for the same thing: a perceived colour
+can be described in terms of hue, lightness and chroma if it is seen as belonging to an
+illuminated object, or in terms of either hue, brightness and saturation or hue,
+brightness and colourfulness if it is seen as belonging to light.
+Another set of perceived attributes of object colours, not currently defined by the
+CIE, consists of proportions of black, white and colour content considered as
+perceived components of an object colour. Black content or blackness is however
+used as a dimension in the historical Ostwald System and in the modern
+Scandinavian Natural colour System, and in his book The Perception of Color (1974)
+Kodak scientist Ralph Evans introduced the term brilliance for this scale from
+blackness to luminosity.
+Below: Attributes of colours perceived as belonging to (A) objects and (B) light (David Briggs, The
+Dimensions of Colour, www.huevaluechroma.com/011.php).
+
+Lightness
+Lightness: "brightness of an area judged relative to the brightness of a similarly
+illuminated area that appears to be white or highly transmitting" (CIE 2011, 17-680).
+Lightness, value, greyscale value, and tone are all very closely related or identical in
+meaning. Lightness, value and greyscale value refer to the scale from black through
+various shades of grey to white, increasing in that order. The word tone as used by
+painters refers (in one of its senses) to the same scale, but may be deemed to increase
+from white to black. Lightness is how we perceive the luminous reflectance of an
+object.
+Painters most commonly specify lightness in terms of Munsell value in traditional
+media and in terms of Lightness (L) in Lab colour space (based on CIE L*a*b* space)
+in digital painting.
+If the lightness information in an image is isolated from the chromatic information,
+remarkably large amounts of the legibility and compositional structure are preserved
+Below: 1. Lightness scales used by painters, David Briggs, NAS AHT elective Theories of Colour. 2.
+Demonstration of importance of lightness content in a pictorial image. (David Briggs, The Dimensions
+of Colour, www.huevaluechroma.com/014.php).
+
+Value Study
+A copy or study painted using a series of greyscale mixtures, with the purpose of
+developing an awareness of absolute value (lightness).
+Munsell-based value scales used by painters and painting teachers generally have
+either nine or eleven levels, counting black and white paint as levels one and nine, or
+zero and ten, respectively. A nine-level Munsell-based value scale was used at NAS in
+the 1950’s in the colour course of Phyllis Shillito, and at Meadowbank TAFE in the
+1970’s, under the evident influence of Maitland Graves’ 1941 book The Art of Color
+and Design (see below under Value Key, Value Interval and Value Chord).
+Below: 1. Painting copy exercise in Munsell greyscale values, Juliemma Moran. 2. Still life painting
+exercise in Munsell greyscale values, Alexia Manzoni. Both from Oil Painting with Colour and Light
+(NAS public programs course, teacher David Briggs), Term 1, 2017.
+
+Hue
+Hue: "attribute of a visual perception according to which an area appears to be
+similar to one of the colours: red, yellow, green, and blue, or to a combination of
+adjacent pairs of these colours considered in a closed ring" (CIE, 2011 17-542).
+The hue of any colour is its closest match in the circuit of "pure" or "saturated"
+colours known to artists as the colour wheel. Thus the hue of a brown object is the
+particular orange-yellow to orange-red that it most closely resembles.
+The CIE definition of hue attributes the cycle of hues to successive combinations of
+four hues identified in a separate definition as the "unique" or "unitary" hues, in
+acknowledgment of the widely accepted theory of colour opponency. By this theory,
+hue perceptions are generated in the visual system in the form of red/green and
+yellow/blue perceptions or “signals” based indirectly on information from the
+relative cone responses of the retina. Colour opponency is also explicitly
+acknowledged in the hue circle of the Scandinavian Natural Colour System (NCS).
+Below: Generation of spectral colours according to the colour-opponent model of colour vision
+(David Briggs, The Dimensions of Colour, http://www.huevaluechroma.com/014.php).
+
+Hue is how we perceive the direction of bias of the spectral power distribution of a
+light (its distribution of energy through the spectrum) or of the spectral reflectance of
+an object (its reflectance through the spectrum). In general terms a yellow vs blue
+perception is evoked by long or middle vs short wavelength dominance, while a red
+vs green perception is evoked by long OR short vs middle wavelength dominance
+For example, paints that strongly reflect the middle and long wavelength parts of the
+spectrum are seen as being strongly yellow, and either slightly greenish, slightly
+reddish, or neither depending on the relative size of the middle and long wavelength
+contributions. In Gamblin Cadmium Yellow Light (below) these contributions are
+approximately evenly balanced and the paint is seen as middle yellow, neither
+greenish nor reddish, while in Gamblin Cadmium Yellow Medium the contribution
+from the middle (green-evoking) part of the spectrum is smaller, and so the paint
+colour is seen as having a red component (Fig. 1.4.5). Titanium White is seen as
+being neutral because its spectral reflectance has no substantial bias.
+Below: Effect on perceived hue of a small difference in bias of spectral reflectance between two yellow
+artists’ paints (David Briggs, The Dimensions of Colour, http://www.huevaluechroma.com/014.php).
+
+Unique Hue
+Unique hue: "hue that cannot be further described by the use of hue names other
+than its own. Equivalent term: "unitary hue". NOTE There are 4 unique hues: red,
+green, yellow and blue forming 2 pairs of opponent hues: red and green, yellow and
+blue." (CIE, 2011, 17-1373).
+Below: Left, paint swatches supplied by fifteen students of the 2017 Visual Dictionary of Colour
+workshop as representative of the hue that appears unique red, yellow green and blue to them. Right,
+photographed colours of all fifteen supplied colour swatches plotted in CIE L*a*b* colour space using
+the program ColorSpace by Philippe Colantoni. The general positions of each hue group and the
+particularly high variation in choices of unique green both align with published studies based on
+choosing Munsell colour chips.
+
+Student Hue Circle Exercises
+1. Munsell hue circle exercises by Tony Tuckson, Sydney Technical College, 1947-49. The circles are
+labelled with the Munsell principal hues (R, Y, G, B, and P) and abbreviations for specific pigments,
+probably including alizarin crimson (“AC”), chrome yellow (“CrY”), cerulean blue (“CerB”), prussian
+blue (“PrB”) ultramarine (“UL”), yellow ochre (“Yo”) venetian red (“VR”), indian red (“IR”), light red
+(“LR”) and lamp black (“LBlack”). National Art School Collection.
+2. Colour wheel exercise by Jocelyn Maughan from the colour class taught by Phyllis Shillito within
+the Diploma course at East Sydney Technical College in 1958. Shillito’s “No 1” colour wheel is a
+distinctive 15-hue arrangement with each of the three traditional “primary colours” represented by
+two specified pigments representing a warm and a cool version of each, plus three “secondary colours”
+and six intermediate “Sub-primary colours”. Collection of Jocelyn Maughan.
+3. Colour wheel exercise by Jocelyn Maughan from the colour class taught by Phyllis Shillito within
+the Diploma course at East Sydney Technical College in 1958. “Tertiary” colour wheel with concentric
+discs representing double-primary, secondary, and nine “tertiary” each represented by eight tones.
+Collection of Jocelyn Maughan.
+4. Colour wheel exercise by Deborah Beck, Meadowbank TAFE, 1973. Fifteen-hue colour wheel very
+similar to Jocelyn Maughan’s Shilltio wheel from 1958, apart from the cadmium yellows in place of
+chrome and lemon yellow. National Art School Collection.
+5. Colour wheel exercise by Deborah Beck, Meadowbank TAFE, 1973. Twelve-hue colour wheel with
+similar primaries to 3. National Art School Collection.
+6. Colour wheel exercise by Deborah Beck, Meadowbank TAFE, 1973. “Tertiary colour wheel”,
+showing “shade, tertiary colour, tint, lighter tint” for nine “tertiary colours” mixed from three mixed
+secondary colours. National Art School Collection.
+7. Colour wheel exercise by Ann Roxburgh, Meadowbank TAFE, 1973. Colour star reminiscent of
+Itten’s design but with 15 hues as in Jocelyn Maughan’s 1958 Shillito “No 1” wheel, with the six “warm
+and cool” primaries repeated in the central disc. National Art School Collection.
+8. Colour wheel exercise by student at Hornsby TAFE, 1970s. The diagram closely follows the design
+of Itten’s twelve-hue colour circle from The Art of Color (1961). The “secondary” and “tertiary”*
+colours appear to have been mixed from the three specified primary colours (cadmium [yellow] deep,
+cadmium red and cerulean blue), and as is inevitable with paints of these hues the resulting purples
+are very low in chroma. National Art School Collection.
+9. Student colour wheel exercise by Rosemary Robins, Hornsby TAFE, 1979. Adaptation of Itten’s
+design to include “warm and cool” versions of each primary colour, and a total of fifteen hues, as in
+Shillito’s “No 1” wheel. The “warm and cool” primaries mix a much greater gamut of colours than the
+single primaries of diagram 8, largely because of the presence of magenta and cyan subtractive
+primaries as the “cool” red and “cool” blue respectively. National Art School Collection.
+*The historical term "tertiary colour" was introduced by George Field in 1817 with the meaning of
+greyed colours that in Field's view "contain" all three of the historical "primary colours", red, yellow
+and blue, and “tertiary” is used in this sense in exhibits 3 and 6. An entirely different usage of
+"tertiary colour", which dates at least to John Ruskin in 1877, refers to the six third-order hues of a 12hue "colour wheel", and “tertiary” is used in this sense in exhibit 9. Both conceptions of "tertiary
+colour" are absent from standard CIE colour terminology, in which greyed object colours are simply
+said to have low chroma.
+
+Exhibits 1 and 4-9 reproduced by kind permission of NAS archivist Deborah Beck.
+
+Chroma
+Chroma: "colourfulness of an area judged as a proportion of the brightness of a
+similarly illuminated area that appears white or highly transmitting"(CIE, 2011, 17139).
+Chroma is the chromatic strength of an object colour, the perceived amount of
+difference from a grey of the same lightness (value). The formal definition above is
+based on the idea that when a chromatic light-reflecting object is increasingly
+strongly illuminated, the colourfulness of its appearance increases, but the
+brightness of a similarly illuminated white object increases proportionately, so its
+intrinsic strength of colour or chroma can be defined as the colourfulness judged
+relative to this brightness.
+Below: 1. Effect on chroma of a difference in amount of bias of spectral reflectance of two yellow
+artists’ paints (David Briggs, The Dimensions of Colour, www.huevaluechroma.com/015.php). 2.
+Value-chroma chart (below, with tint-shade scales above) by Jocelyn Maughan, used as teaching
+material at Meadowbank TAFE. Collection of Jocelyn Maughan.
+
+Brightness and Colourfulness
+Brightness: "attribute of a visual perception according to which an area appears to
+emit, or reflect, more or less light. NOTE The use of this term is not restricted to
+primary light sources" (CIE, 2011, 17-111).
+Colourfulness: "attribute of a visual perception according to which the perceived
+colour of an area appears to be more or less chromatic" (CIE, 2011, 17-233).
+Consider a stripe of red paint passing between shadow and light. By virtue of the preconscious processes that equip our vision with a high degree of colour constancy, we
+instantly, effortlessly and automatically see the stripe as being the same colour, that
+is, as having the same red object colour, over its whole length. This red colour can be
+specified in terms of an object colour notation such as Munsell hue, value and
+chroma, and we could confirm that the stripe matches the same Munsell chip placed
+beside it in the shadow and in the light. Nevertheless, the appearance of the stripe is
+brighter and more colourful in the light than in the shadow. The colour attributes of
+brightness and colourfulness pertain to the perceived colour of the light reaching our
+eyes from different parts of the stripe, rather than to the object colour seen as
+belonging to the stripe itself. Brightness is how we perceive the amount of light
+emitted, transmitted or reflected by an area. Colourfulness is how we perceive the
+absolute amount of spectral bias of a light; it is the cumulative effect of its saturation
+(q.v.) and brightness.
+Below: Demonstration of distinction between lightness and chroma vs brightness and colourfulness.
+David Briggs, The Dimensions of Colour, http://www.huevaluechroma.com/016.php).
+
+Saturation
+Saturation: "colourfulness of an area judged in proportion to its brightness" (CIE,
+2011, 17-1136).
+The word “saturation” is often used loosely for chroma or for some form of relative
+chroma, but is defined by the CIE as a distinct attribute of perceived colour. For an
+object colour, saturation is in effect chroma judged relative to lightness. In the first
+diagram below, the dark ruby reds R1 and R2 have lower chroma that R3, but their
+chroma relative to their lightness, or saturation, is similarly high.
+On a Munsell hue page, lines of uniform saturation radiate from near the black point,
+in contrast to the vertical lines of uniform chroma. These lines of uniform saturation
+are important because they define the colours of a shading series, that is, image
+colours that evoke the appearance of a uniformly coloured diffusely-reflecting object
+turning under a light source.
+Below: 1. Pair of diagrams explaining CIE definition of saturation. 2. Lines of uniform saturation on
+Munsell hue pages from the Munsell Book of Colour and for digital colours. 3. Demonstration of
+shading series, that is, lines of uniform saturation (David Briggs, The Dimensions of Colour,
+www.huevaluechroma.com/017.php).
+
+Blackness
+Blackness: the perceived amount of black in the [object] colour relative to pure
+black. A colour with the notation S 2060-Y10R has a blackness value of 20. Colours
+with the same blackness are found along the straight lines parallel to the side W-C on
+the NCS Colour Triangle (NCS UK glossary,
+http://www.ncscolour.co.uk/information/ncs-glossary.html).
+The Scandinavian Natural Colour System (NCS) and the historically important
+Ostwald system both use an attribute of perceived object colour, known as black
+content or blackness, not currently defined by the CIE. In both systems object
+colours are considered to be divisible in black, white and full colour components,
+represented on triangular hue pages that together make up a double-cone space,
+although in the NCS system this space is only partly filled with colour samples. The
+NCS differs from the Ostwald system in being based purely on colour perception.
+Lines of uniform NCS blackness descend obliquely outwards on Munsell hue pages at
+an angle that varies according to hue.
+Below: 1. Diagram of NCS system. 2. Lines of uniform NCS blackness on four Munsell hue pages
+paints (David Briggs, The Dimensions of Colour, www.huevaluechroma.com/018.php).
+
+Brilliance
+Brilliance: relative brightness of an area judged on a scale proceeding from black
+through decreasing blackness (or "greyness") to fluorent (fluorescent-looking) and
+then self-luminous. Brilliance "may be considered negative for grayness and
+positive for fluorence, or simply continuous from the black point" (Evans, 1974, p.
+100).
+In his book The Perception of Color (1974) Kodak scientist Ralph Evans introduced
+the term brilliance for a scale from blackness to luminosity. Evans found that for a
+given surround luminance, a central stimulus below a certain luminance was
+perceived as being black, and increasing the luminance above this threshold evoked
+decreasing perceived black content up to a point where the latter disappears. This
+point of zero black content occurs at varying lightness for stimuli of different hues
+and different saturations. Increasing the luminance above this level results in the
+perception of a fluorescent object colour (fluorence) and eventually the perception of
+a light source.
+What makes Beau Lotto's remarkable "Cube I" illusion (below) so striking is that the
+same image colour is perceived as a black-containing object colour and as a highly
+fluorent or luminous colour in different parts of the image.
+Below: 1. Illustration of scale of brilliance: the same three ellipses vary in brilliance in different
+contexts. 2. In Lotto's cube illusion the same image colour is perceived as a black-containing object
+colour and as a highly fluorent or luminous colour in different parts of the image (David Briggs, The
+Dimensions of Colour, www.huevaluechroma.com/018.php).
+
+PART 3: APPLIED COLOUR
+In this section we illustrate a miscellany of terms relating to the scientific, technical
+and aesthetic aspects of colour practice. We are grateful to be able to include student
+exercises and teaching materials associated with the history of the National Art
+School illustrating various subjective concepts of colour design. Materials from the
+National Art School Collection are reproduced by kind permission of NAS archivist
+Deborah Beck.
+
+Colour Space
+Colour space: geometric representation of colour in space, usually of 3 dimensions
+(CIE, 2011, 17-226).
+Below: 1. Comparison of gamut (colour range) of an artists’ acrylic paint range with sRGB colour
+space. image, David Briggs, The Dimensions of Colour, www.huevaluechroma.com/015.php.
+2. A standard digital colour space (sRGB) represented in various colour spaces. David Briggs (in
+press, from Chapter 8, Colour Spaces in the Routledge Handbook of Philosophy of Colour.
+
+Munsell System
+Munsell system: system for specifying object colours in terms of perceptually even
+scales of hue (Munsell hue) lightness (Munsell value) and chroma (Munsell chroma),
+invented by the artist and art teacher Albert Munsell in the early 20 th century.
+Below: 1 On left, response to the concept of a tree of colours by Helen Coates-Milton and other
+students in the Visual Dictionary of Colour workshop, 2017, and on right, model of Munsell colour
+space, Nina Price, Lilly Marshall, Clayton Croker, Samuel Briant and Jess Amos, from same workshop.
+2. Another view of the model of Munsell colour space. 3. Munsell hue circle exercises by Tony
+Tuckson, Sydney Technical College, 1947-49. National Art School Collection.
+
+Cleland's illustration of Munsell's
+conception of his system as a tree of
+colours (T. M. Cleland, 1921, A
+practical description of the Munsell
+color system.
+
+Digital Colour Spaces
+RGB: cubic digital colour space specifying colours according to relative red, green
+and blue components, usually on a nonlinear scale.
+HSB: digital colour space classifying RGB colours according to hue angle (H),
+relative saturation (S) and relative brightness (B).
+CIE L*a*b* colour space: three-dimensional, approximately uniform colour space
+produced by plotting in rectangular coordinates L* (CIE lightness) and a* and b*
+(chromatic coordinates corresponding roughly to redness/greenness and
+yellowness/blueness respectively). A version of CIE L*a*b* called Lab space is of
+central importance in Photoshop.
+Below : Models of RGB, HSB and Lab digital colour space in air-drying clay by Rachel Seeto, Visual
+Dictionary of Colour workshop, 2017 (painted by David Briggs).
+
+Value Key
+Low key: “A composition in which the dominant [Munsell] value is approximately 1,
+2 or 3” (Graves, 1941, The Art of Color and Design, p. 281).
+Intermediate key: “A composition in which the dominant [Munsell] value is
+approximately 4, 5 or 6” (Graves, 1941, The Art of Color and Design, p. 281).
+High key: “A composition in which the general or prevailing tonality or dominant
+value is approximately [Munsell value] 7, 8 or 9” (Graves, 1941, The Art of Color and
+Design, p. 280).
+
+Maitland Graves, 1941, The Art of Color and Design, p. 137. The value scale is a ninevalue Munsell scale.
+
+Value Interval
+Major: “Large or great interval, strong contrast, such as between values that are 5, 6
+or 7 [Munsell value] steps apart” (Graves, 1941, The Art of Color and Design, p. 281).
+Minor: “Small interval, closed up, muted. Subdued, muffled or weak contrast such
+as between values that are three [Munsell value] steps apart or less” (Graves, 1941,
+The Art of Color and Design, p. 282).
+Below: 1. Value key and value interval chart exercise by Deborah Beck for the colour course taught at
+Meadowbank TAFE in 1973. 2. Value key and interval composition exercise by a student from the
+colour course at Hornsby TAFE in the 1970s. 3. Value key and interval composition exercise by Ann
+Roxburgh from the colour course at Meadowbank TAFE in the 1970s. 1-3 Collection of National Art
+School. 4. Value key and interval composition exercise (intermediate minor) by Kim Macnaught,
+Visual Dictionary of Colour workshop, 2017.
+
+Value Chord
+Value chord: “A value combination in which the values and the intervals between
+the values or the value rhythm is planned according to the principles of design. This
+term distinguishes such an organized value relationship from a value combination in
+which the Value Rhythm is not so planned” (Graves, 1941, The Art of Color and
+Design, p. 285).
+
+Maitland Graves, 1941, The Art
+of Color and Design, p. 156.
+The value scale is a nine-value
+Munsell scale.
+
+Colour Chord
+Colour chord: “A colour combination in which the colors and the intervals between
+the colours, or the color rhythm, is planned according to the principles of design.
+This term distinguishes such an organized color relationship from a color
+combination in which the Color Rhythm is not so planned” (Graves, 1941, The Art of
+Color and Design, p. 285).
+The colour course taught by Phyllis Shillito at the East Sydney Technical College
+included exercises in value chords and colour chords that closely follow diagrams
+from Maitland Graves’ book The Art of Color and Design (1941, 1951). These
+concepts had also been emphasized in the first decades of the twentieth century by
+Denman Ross and his former student Arthur Pope.
+Below: 1, Value chord and 2, colour chord exercises by Jocelyn Maughan from the colour course
+taught by Phyllis Shillito within the Diploma course at the East Sydney Technical College in 1958.
+Collection of Jocelyn Maughan.
+
+Discord
+1. “Extreme contrast or opposition” (Maitland Graves, 1941, The Art of Color and
+Design, p. 279).
+2. “reversal of the natural order” of colours (H. Barrett Carpenter, Suggestions for the
+Study of Colour, 1915). “Reversal” here refers to the order of values representing
+different hues relative to the order of values of their “full” colour versions; Carpenter
+considers such reversals “unendurable” in large quantities but to add much to
+brilliance in small quantities.
+Below: Teaching materials on discords (in second sense) by Jocelyn Maughan, Meadowbank TAFE.
+Collection of Jocelyn Maughan.
+
+Monochromatic, Analogous and
+Complementary Colour Schemes
+Monochromatic, analogous and complementary colour schemes feature widely in
+systems of “colour harmony”, the most important early source being Chevreul.
+
+Chevreul [tr. Spanton, 1857], The Laws of Contrast of Colour.
+
+Triadic and Tetradic Schemes
+Symmetrical triadic and tetradic colour schemes also feature in various “colour
+harmony” systems, and seems to derive ultimately from the suggestion by Ogden
+Rood that “colours less than 80 or 90 degrees apart suffer from harmful contrast,
+while those more distant help each other” (Modern Chromatics, 1879, p. 292).
+Below: Triadic and tetradic colour schemes used in exhibits 3 and 4 below in Munsell 40-hue circle.
+
+Next two pages: 1, 2, Abstract compositions using analogous and complementary (“Harmonious”
+and “Contrasting”) hue schemes, Ann Roxburgh from the colour course at Meadowbank TAFE in the
+1970s. Collection of National Art School. 3. Abstract composition using triadic hue scheme. 4.
+Figurative composition based on tetradic hue scheme. Maria Constantinescu, Visual Dictionary of
+Colour workshop, 2017.
+
+Restricted Gamut
+A restricted gamut automatically results from mixing all colours from a limited
+palette consisting of a very small number of colourants (often three), especially if
+these are far from the ideal subtractive primaries.
+Below: 1. Two student design exercises, possibly by Rose Vickers, East Sydney Technical College,
+1962. Collection of National Art School. 2. RGB colours from photographs of 1, plotted in CIE*L*a*b*
+space.
+
+NCS Nuance
+Nuance: “a colour's relationship to black and to maximum colour intensity or
+chromaticness. The other element needed to describe a colour would be the hue.
+Colours that have the same nuance but a different hue will be found in exactly the
+same location of the NCS Colour Triangle” (NCS UK glossary,
+http://www.ncscolour.co.uk/information/ncs-glossary.html).
+A concept of “colour harmony” associated with the historical Ostwald system and the
+modern Scandinavian Natural Colour System is that of unity of “nuance” in these
+systems, that is equality of black, white and colour content for different hues (see
+Blackness). In addition to the unity imparted by their shared black/ white/
+chromatic content, such sets of colours maintain the relative lightness relationships
+shown by the full colours of each hue (yellow lightest, etc.). Sets of colours related in
+this way have long been labelled a "concord", in contrast to a "discord" (q.v) where
+the "natural order" of lightness of the different hues is disrupted.
+Below: Comparison of colour set of identical “nuance” with set of identical value and chroma (David
+Briggs, The Dimensions of Colour, www.huevaluechroma.com/018.php).
+
+Tints and Shades
+Tint: object colour perceived to consist of a pure colour plus white, without any
+black content.
+Shade: object colour perceived to consist of pure colour plus black, without any
+white content.
+Below: 1. Tint-shade scale by Rose Espinosa, Visual Dictionary of Colour workshop, 2017. 2.
+Exercise in tints and shades of progressive mixtures of two paint-mixing complementaries. Student
+exercise by Deborah Beck for the colour course taught at Meadowbank TAFE in 1973. Collection of
+National Art School.
+
+Washes and Glazes
+Wash: Layer of colourant applied with a flowing, liquid consistency. Washes are the
+dominant mode of watercolour application and may be built up in many
+superimposed layers.
+Glaze: generally “a thin transparent layer of oil color of a darker value applied over
+either an opaque or transparent layer of oil or tempera underpainting of a lighter
+value” (Mayer, 1991, The Artist’s Handbook of Materials and Techniques, Fifth
+edition).
+Below: Demonstration of superimposed watercolour washes, Peta Minnici, Visual Dictionary of
+Colour workshop, 2017.
+
+Subtractive Mixing
+Subtractive mixing: “colour mixing” (strictly, colour stimulus synthesis) “brought
+about by the transmission of light through two or more superimposed transparent or
+semitransparent colorants” (Burnham, Hanes and Bartelson, 1957, Color: a Guide to
+Basic Facts and Concepts).
+Below: Demonstration of subtractive mixing of superimposed crimson and blue watercolour washes,
+Peta Minnici, Visual Dictionary of Colour workshop, 2017.
+
+Subtractive Primary Hues
+Subtractive primary hues: Optimal hues for mixing a large gamut of colours in
+processes primarily involving subtractive mixing, including physical intermixture of
+paints and superimposition of transparent colourants (glazes and washes).
+Colourants close to yellow, magenta and cyan are optimal for such processes in all
+media.
+Below: 1. Comparison of gamut of cyan, magenta and yellow pigmented inks with gamut of inks of
+the historical “primary” hues (red, blue and yellow). Diagrams on right show ranges of photographed
+colours in CIE L*a*b* colour space; some ink colours near yellow are beyond the RGB gamut of the
+photograph and so are clipped. Helen Morgan, Visual Dictionary of Colour workshop, 2017. 2. Similar
+comparison to 1, using artists’ watercolours. Helen Morgan, Visual Dictionary of Colour workshop,
+2017.
+
+Colourant Mixing Paths
+Mixing paths of paints visualized as paths through a three dimensional colour space,
+such as a hue-lightness-chroma space like the Munsell system.
+Below: 1. Predicted colourant mixing paths for white and yellow acrylic paints calculated using the
+program drop2color by Zsolt Kovacs. Note hue shifts of some paints. 2. Three-dimensional model of
+colourant mixing paths in Munsell space of titanium white paint (left) and lemon yellow (right) with
+other paints from the NAS first-year student recommended list. 3, 4. Detailed views of models. Visual
+Dictionary of Colour workshop team including, Owen Morgan, Rachel Seeto, Helen Morgan and
+others, 2017.
+
+PART 4: HISTORICAL STUDENT
+EXERCISES FROM THE NATIONAL
+ART SCHOOL ARCHIVE
+Back row, colour theory exercises, left to right:
+1. Munsell hue circle exercises by Tony Tuckson, Sydney Technical College, 1947-49.
+2. “Green grid”, student colour theory exercise by Tony Tuckson, Sydney Technical
+College, 1947-49.
+3. Colour wheel exercise by Ann Roxburgh, Meadowbank TAFE, 1973. Colour star
+reminiscent of Itten’s design but with 15 hues as in Jocelyn Maughan’s 1958 Shillito
+“No 1” wheel, with the six “warm and cool” primaries repeated in the central disc.
+4. Colour wheel exercise by Ann Roxburgh, Meadowbank TAFE, 1973. “Tertiary
+Colour Wheel + Tints & Shades”.
+5. Colour wheel exercise by student at Hornsby TAFE, 1970s. The diagram closely
+follows the design of Itten’s twelve-hue colour circle from The Art of Color (1961).
+The “secondary” and “tertiary”* colours appear to have been mixed from the three
+specified primary colours (cadmium [yellow] deep, cadmium red and cerulean blue),
+and as is inevitable with paints of these hues the resulting purples are very low in
+chroma.
+6. Student colour wheel exercise by Rosemary Robins, Hornsby TAFE, 1979.
+Adaptation of Itten’s design to include “warm and cool” versions of each primary
+colour, and a total of fifteen hues, as in Shillito’s “No 1” wheel. The “warm and cool”
+primaries mix a much greater gamut of colours than the single primaries of diagram
+5, largely because of the presence of a magenta subtractive primary as the “cool” red.
+Front row, colour and design exercises, left to right:
+1. Student design exercise by Jean Weir, Sydney Technical College, 1948.
+2. Student design exercise by Miriam Deen, East Sydney Technical College, 1970s.
+3, 4. Two student design exercises, possibly by Rose Vickers, East Sydney Technical
+College, 1962.
+5. Student design exercise by J. Cox, Hornsby TAFE, 1970s.
+6. Student design exercise Ann Roxburgh, Meadowbank TAFE, 1973.
+
+All works from the National Art School Collection, reproduced here with kind
+permission of NAS archivist Deborah Beck.
+
+

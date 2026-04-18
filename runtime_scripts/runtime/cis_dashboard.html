@@ -1138,6 +1138,7 @@ function SessionPanel({ projectId }) {
 
   const closeSession = async () => {
     if (!focus || !completed || !nextSteps) return;
+    if (closeResult?.success) return; // prevent double-click after success
     setClosing(true);
     const result = await api.post('/api/session/close', { focus, completed, next_steps: nextSteps, notes });
     setCloseResult(result);
@@ -1157,24 +1158,26 @@ function SessionPanel({ projectId }) {
     e('div', { className:'card' },
       e('div', { className:'card-title' }, 'Session Close'),
       e('div', { className:'field-row' },
-        e('input', { type:'text', placeholder:'Session focus', value:focus, onChange:ev=>setFocus(ev.target.value) })
+        e('input', { type:'text', placeholder:'Session focus', value:focus, onChange:ev=>setFocus(ev.target.value), disabled:!!closeResult?.success })
       ),
       e('div', { className:'field-row' },
-        e('textarea', { placeholder:'What was completed this session?', value:completed, onChange:ev=>setCompleted(ev.target.value), style:{minHeight:56} })
+        e('textarea', { placeholder:'What was completed this session?', value:completed, onChange:ev=>setCompleted(ev.target.value), style:{minHeight:56}, disabled:!!closeResult?.success })
       ),
       e('div', { className:'field-row' },
-        e('textarea', { placeholder:'Next steps for the next session', value:nextSteps, onChange:ev=>setNextSteps(ev.target.value), style:{minHeight:56} })
+        e('textarea', { placeholder:'Next steps for the next session', value:nextSteps, onChange:ev=>setNextSteps(ev.target.value), style:{minHeight:56}, disabled:!!closeResult?.success })
       ),
       e('div', { className:'field-row' },
-        e('input', { type:'text', placeholder:'Notes (optional)', value:notes, onChange:ev=>setNotes(ev.target.value) })
+        e('input', { type:'text', placeholder:'Notes (optional)', value:notes, onChange:ev=>setNotes(ev.target.value), disabled:!!closeResult?.success })
       ),
       e('button', {
-        className:'btn btn-primary',
-        onClick:closeSession,
-        disabled: closing || !focus || !completed || !nextSteps
-      }, closing ? '⟳ Closing...' : '✓ Close Session + Commit'),
-      closeResult && e('div', { className:`output-log ${closeResult.git?.success ? '' : 'err'}`, style:{marginTop:8} },
-        closeResult.git?.success ? '✓ Committed and pushed.\n\n' + (closeResult.handoff_content||'') : closeResult.git?.stderr || 'Error'
+        className: `btn ${closeResult?.success ? 'btn-success' : 'btn-primary'}`,
+        onClick: closeSession,
+        disabled: closing || !focus || !completed || !nextSteps || !!closeResult?.success
+      }, closing ? '⟳ Closing...' : closeResult?.success ? '✓ Session Closed' : '✓ Close Session + Commit'),
+
+      closeResult && e('div', { className:'output-log', style:{marginTop:8} },
+        (closeResult.step_log || []).join('\n') ||
+        (closeResult.git?.success ? '✓ Done.' : closeResult.git?.stderr || 'Error')
       )
     ),
 
