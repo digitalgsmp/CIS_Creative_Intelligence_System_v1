@@ -1,6 +1,12 @@
 # CIS_LIVE — Active Scratchpad
 Format: Bullets | 15 lines max | Newest first | Ends with ACTION
 
+## 8 model Colab Tes2 — 2026-04-18 22:41 [OPEN]
+Problem: I'm poor and need to be creative getting the best tools I can get.
+Tags: clause, gemini, chatgtp
+
+---
+
 ## CIS Live test — 2026-04-18 19:31 [OPEN]
 Problem: Can we solve a problem together. Testing the efficiency of multi-
 platform dialogue.
