@@ -1138,36 +1138,38 @@ function SessionPanel({ projectId }) {
 
   const closeSession = async () => {
     if (!focus || !completed || !nextSteps) return;
-    if (closeResult?.success) return; // prevent double-click after success
+    if (closeResult?.success) return;
     setClosing(true);
-    const result = await api.post('/api/session/close', { focus, completed, next_steps: nextSteps, notes });
+    const result = await api.post('/api/session/close', { focus, completed, next_steps: nextSteps, notes, project_id: projectId });
     setCloseResult(result);
     setClosing(false);
     api.get('/api/session/recent').then(setRecent);
   };
 
+  const taStyle = (h) => ({ minHeight: h, resize: 'vertical' });
+
   return e('div', null,
     e('div', { className:'card' },
       e('div', { className:'card-title' }, 'Session Start'),
-      e('button', { className:'btn btn-success', onClick:startSession, disabled:starting },
-        starting ? '⟳ Starting...' : '▶ Run cis-start'
+      e('button', { className:'btn btn-primary', onClick:startSession, disabled:starting },
+        starting ? '\u29bf Starting...' : '\u25b6 Run cis-start'
       ),
       startOutput && e('div', { className:'session-output' }, startOutput)
     ),
 
-    e('div', { className:'card' },
+    e('div', { className:'card', style:{ marginTop: 16 } },
       e('div', { className:'card-title' }, 'Session Close'),
       e('div', { className:'field-row' },
-        e('input', { type:'text', placeholder:'Session focus', value:focus, onChange:ev=>setFocus(ev.target.value), disabled:!!closeResult?.success })
+        e('input', { type:'text', placeholder:'Session focus — one sentence', value:focus, onChange:ev=>setFocus(ev.target.value), disabled:!!closeResult?.success })
       ),
       e('div', { className:'field-row' },
-        e('textarea', { placeholder:'What was completed this session?', value:completed, onChange:ev=>setCompleted(ev.target.value), style:{minHeight:56}, disabled:!!closeResult?.success })
+        e('textarea', { placeholder:'What was completed this session?', value:completed, onChange:ev=>setCompleted(ev.target.value), style:taStyle(80), disabled:!!closeResult?.success })
       ),
       e('div', { className:'field-row' },
-        e('textarea', { placeholder:'Next steps for the next session', value:nextSteps, onChange:ev=>setNextSteps(ev.target.value), style:{minHeight:56}, disabled:!!closeResult?.success })
+        e('textarea', { placeholder:'Next steps for the next session', value:nextSteps, onChange:ev=>setNextSteps(ev.target.value), style:taStyle(80), disabled:!!closeResult?.success })
       ),
       e('div', { className:'field-row' },
-        e('input', { type:'text', placeholder:'Notes (optional)', value:notes, onChange:ev=>setNotes(ev.target.value), disabled:!!closeResult?.success })
+        e('textarea', { placeholder:'Notes — pending decisions, warnings, deferred context (optional)', value:notes, onChange:ev=>setNotes(ev.target.value), style:taStyle(48), disabled:!!closeResult?.success })
       ),
       e('button', {
         className: `btn ${closeResult?.success ? 'btn-success' : 'btn-primary'}`,
@@ -1311,13 +1313,71 @@ const STEPS = [
 
 const STATUS_ORDER = ['arrived','classified','preprocessed','extracted','draft','normalized','checked','approved','locked'];
 
+function FileBrowser({ onSelect }) {
+  const [browsePath, setBrowsePath] = useState('/mnt/archive');
+  const [entries, setEntries]       = useState([]);
+  const [parent, setParent]         = useState(null);
+  const [loading, setLoading]       = useState(false);
+  const [error, setError]           = useState('');
+
+  const INGESTABLE = ['.pdf','.jpg','.jpeg','.png','.webp','.mp4','.mov','.avi','.mp3','.wav','.txt','.md'];
+
+  const browse = async (path) => {
+    setLoading(true); setError('');
+    const r = await api.get(`/api/browse?path=${encodeURIComponent(path)}`);
+    if (r.error) { setError(r.error); setLoading(false); return; }
+    setBrowsePath(r.path);
+    setParent(r.parent);
+    setEntries(r.entries);
+    setLoading(false);
+  };
+
+  useEffect(() => { browse('/mnt/archive'); }, []);
+
+  const canIngest = (entry) => !entry.is_dir && INGESTABLE.includes(entry.ext);
+
+  return e('div', { style:{ border:'1px solid var(--border)', borderRadius:6, overflow:'hidden', marginTop:8 } },
+    e('div', { style:{ background:'var(--bg-card)', padding:'6px 10px', display:'flex', alignItems:'center', gap:8, borderBottom:'1px solid var(--border)' } },
+      parent && e('button', { className:'btn btn-secondary', style:{padding:'2px 8px', fontSize:11}, onClick:()=>browse(parent) }, '↑ Up'),
+      e('span', { style:{ fontFamily:'var(--mono)', fontSize:11, color:'var(--text-dim)', flex:1, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' } }, browsePath)
+    ),
+    loading && e('div', { style:{padding:12, color:'var(--text-dim)', fontSize:12} }, 'Loading...'),
+    error   && e('div', { style:{padding:12, color:'var(--accent-red)', fontSize:12} }, error),
+    !loading && e('div', { style:{ maxHeight:240, overflowY:'auto' } },
+      entries.length === 0 && e('div', { style:{padding:12, color:'var(--text-dim)', fontSize:12} }, 'Empty folder'),
+      entries.map((entry, i) =>
+        e('div', { key:i,
+          style:{
+            display:'flex', alignItems:'center', gap:8, padding:'5px 10px',
+            cursor: entry.is_dir || canIngest(entry) ? 'pointer' : 'default',
+            borderBottom:'1px solid var(--border)',
+            opacity: !entry.is_dir && !canIngest(entry) ? 0.35 : 1,
+            background:'transparent'
+          },
+          onClick: () => {
+            if (entry.is_dir) browse(entry.path);
+            else if (canIngest(entry)) onSelect(entry.path);
+          },
+          onMouseEnter: e2 => { if (entry.is_dir || canIngest(entry)) e2.currentTarget.style.background = 'var(--bg-hover)'; },
+          onMouseLeave: e2 => { e2.currentTarget.style.background = 'transparent'; }
+        },
+          e('span', { style:{fontSize:13, width:16, textAlign:'center', flexShrink:0} }, entry.is_dir ? '📁' : '📄'),
+          e('span', { style:{fontFamily:'var(--mono)', fontSize:11, flex:1, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap'} }, entry.name),
+          canIngest(entry) && e('span', { style:{fontSize:10, color:'var(--accent-green)', flexShrink:0} }, 'SELECT')
+        )
+      )
+    )
+  );
+}
+
 function PipelinePanel({ projectId }) {
-  const [sourceId, setSourceId] = useState('');
-  const [manifest, setManifest] = useState(null);
-  const [filePath, setFilePath] = useState('');
-  const [running, setRunning]   = useState(null);
-  const [log, setLog]           = useState('');
-  const [logErr, setLogErr]     = useState(false);
+  const [sourceId, setSourceId]   = useState('');
+  const [manifest, setManifest]   = useState(null);
+  const [filePath, setFilePath]   = useState('');
+  const [running, setRunning]     = useState(null);
+  const [log, setLog]             = useState('');
+  const [logErr, setLogErr]       = useState(false);
+  const [showBrowser, setShowBrowser] = useState(false);
 
   const fetchManifest = async id => {
     if (!id.trim()) return;
@@ -1338,7 +1398,7 @@ function PipelinePanel({ projectId }) {
   const runIntake = async () => {
     if (!filePath.trim()) return;
     setRunning('intake'); setLog('Running intake...'); setLogErr(false);
-    const r = await api.post('/api/intake', { path: filePath.trim() });
+    const r = await api.post('/api/intake', { path: filePath.trim(), project_id: projectId });
     setLog(r.success ? (r.stdout||'Intake complete.') : (r.stderr||'Intake failed.'));
     setLogErr(!r.success);
     setRunning(null);
@@ -1354,11 +1414,16 @@ function PipelinePanel({ projectId }) {
     e('div', { className:'card' },
       e('div', { className:'card-title' }, 'Intake New Source'),
       e('div', { className:'field-row' },
-        e('input', { type:'text', placeholder:'/mnt/archive/path/to/file.jpg', value:filePath, onChange:ev=>setFilePath(ev.target.value) }),
+        e('input', { type:'text', placeholder:'/mnt/archive/path/to/file', value:filePath,
+          onChange:ev=>setFilePath(ev.target.value), style:{flex:1} }),
+        e('button', { className:'btn btn-secondary', onClick:()=>setShowBrowser(b=>!b), style:{minWidth:80} },
+          showBrowser ? '✕ Close' : '📁 Browse'
+        ),
         e('button', { className:'btn btn-primary', disabled:running==='intake'||!filePath.trim(), onClick:runIntake, style:{minWidth:80} },
           running==='intake' ? '⟳' : '↓ Intake'
         )
-      )
+      ),
+      showBrowser && e(FileBrowser, { onSelect: path => { setFilePath(path); setShowBrowser(false); } })
     ),
 
     e('div', { className:'card' },

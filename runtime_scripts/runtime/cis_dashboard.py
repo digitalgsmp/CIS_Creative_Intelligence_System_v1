@@ -396,8 +396,29 @@ def api_session_close():
         step_log.append(f"✗ system_log.md failed: {e}")
 
     # ── Step 7: Write handoff markdown ────────────────────────────────────────
+    timestamp        = datetime.now(timezone.utc).strftime("%Y-%m-%d_%H%M")
+    handoff_filename = f"CIS_Handoff_{timestamp}.md"
+    project_id       = data.get("project_id", "").strip() or None
+
     handoff_content = f"""# CIS Session Handoff
 ## Date: {today()}
+## Time: {timestamp[11:]} UTC
+
+## Claude's Duty at Session End
+
+At the end of every session — when the human signals the session is ending — Claude must generate
+the three session close fields so they can be pasted directly into the dashboard Session panel.
+Claude generates these fields once, at the exact moment the session ends. If additional work
+happens after fields are generated, Claude must say: "Those fields are now outdated — here are
+the updated ones:" and regenerate before anything is pasted.
+
+Field 1 — Session Focus: One sentence. The primary objective of this session.
+Field 2 — Completed: Specific past-tense list of what was built, fixed, or decided.
+Field 3 — Next Steps: Prioritized list of what the next session does first.
+Field 4 — Notes: Decisions discussed but not locked. Warnings or gotchas. Mid-thought or
+partially built work. Anything deferred that is not a next step. Omit if nothing qualifies.
+
+---
 
 ## Session Focus
 {focus}
@@ -419,18 +440,28 @@ Run on Ubuntu VM:
 ```
 cis-start
 ```
-Paste output as first message in new chat along with this handoff document.
+Paste output as first message in new chat, then attach this file.
 """
-    handoff_filename = f"CIS_Handoff_{today()}.md"
+
+    # Write to vault
     handoff_path = VAULT_DIR / "Phase_PD" / handoff_filename
     try:
         handoff_path.write_text(handoff_content, encoding="utf-8")
-        results["handoff_written"] = str(handoff_path)
-        step_log.append("✓ Handoff document written")
+        step_log.append("✓ Handoff written to vault")
     except Exception as e:
-        results["handoff_error"] = str(e)
-        step_log.append(f"✗ Handoff write failed: {e}")
+        step_log.append(f"✗ Handoff vault write failed: {e}")
 
+    # Write to active project folder
+    if project_id:
+        project_dir = PROJECTS_DIR / project_id
+        if project_dir.exists():
+            try:
+                (project_dir / handoff_filename).write_text(handoff_content, encoding="utf-8")
+                step_log.append("✓ Handoff written to project folder")
+            except Exception as e:
+                step_log.append(f"✗ Handoff project write failed: {e}")
+
+    results["handoff_written"] = str(handoff_path)
     results["handoff_content"] = handoff_content
 
     # ── Step 8: Git commit and push ───────────────────────────────────────────
@@ -555,13 +586,39 @@ def api_task_run(task_id):
 
 # ── API: Pipeline ──────────────────────────────────────────────────────────────
 
+@app.route("/api/browse")
+def api_browse():
+    path = request.args.get("path", "/mnt/archive").rstrip("/")
+    try:
+        p = Path(path)
+        if not p.exists() or not p.is_dir():
+            return jsonify({"error": "Path not found", "path": path}), 404
+        entries = []
+        for item in sorted(p.iterdir(), key=lambda x: (x.is_file(), x.name.lower())):
+            entries.append({
+                "name":  item.name,
+                "path":  str(item),
+                "is_dir": item.is_dir(),
+                "ext":   item.suffix.lower() if item.is_file() else None
+            })
+        parent = str(p.parent) if str(p) != "/" else None
+        return jsonify({"path": str(p), "parent": parent, "entries": entries})
+    except PermissionError:
+        return jsonify({"error": "Permission denied", "path": path}), 403
+    except Exception as e:
+        return jsonify({"error": str(e), "path": path}), 500
+
 @app.route("/api/intake", methods=["POST"])
 def api_intake():
-    data      = request.get_json()
-    file_path = data.get("path", "").strip()
+    data       = request.get_json()
+    file_path  = data.get("path", "").strip()
+    project_id = data.get("project_id", "").strip() or None
     if not file_path:
         return jsonify({"success": False, "error": "No path provided"}), 400
-    result = run_command(f"python3 {RUNTIME_DIR}/cis_intake.py '{file_path}'")
+    cmd = f"python3 {RUNTIME_DIR}/cis_intake.py '{file_path}'"
+    if project_id:
+        cmd += f" --project '{project_id}'"
+    result = run_command(cmd)
     return jsonify(result)
 
 @app.route("/api/pipeline/<action>", methods=["POST"])
