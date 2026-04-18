@@ -10,6 +10,9 @@ Tags: right, sidebar
 
 I was going to bring up this iss
 
+### Round 2 — 2026-04-18 23:23
+[YOU]: I discovered another kind of bug. If I try to push before making another round you get the arroe Git not configured
+
 ---
 
 ## test 3 — 2026-04-18 23:04 [OPEN]
