@@ -79,10 +79,12 @@ def load_model():
     log(f"Loading model from {MODEL_PATH}")
     log("This takes 2-3 minutes on first load...")
 
+    from transformers import BitsAndBytesConfig
+    bnb_config = BitsAndBytesConfig(load_in_4bit=True)
     processor = AutoProcessor.from_pretrained(MODEL_PATH)
     model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
         MODEL_PATH,
-        load_in_4bit=True,
+        quantization_config=bnb_config,
         device_map="auto"
     )
 

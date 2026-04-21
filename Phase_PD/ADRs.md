@@ -1,5 +1,5 @@
 # CIS Architecture Decision Records
-Last updated: 2026-04-18
+Last updated: 2026-04-21
 ---
 ## ADR-001 — Qwen2.5-VL-32B is the primary extraction model
 **Status:** Locked
@@ -65,4 +65,89 @@ Last updated: 2026-04-18
 **Status:** Locked
 **Decision:** ADR-002 designated vLLM as runtime. This is superseded. Actual runtime is transformers+bitsandbytes per ADR-009.
 **Rationale:** vLLM cannot load 64GB bfloat16 weights in 24GB VRAM. See ADR-008 and ADR-009.
+---
+## ADR-019 — DAM is the unaffiliated knowledge layer
+**Status:** Locked
+**Decision:** Knowledge records exist in two modes: affiliated (project_id set) and unaffiliated (project_id null). Unaffiliated records form the DAM. Promotion moves a record into a project or makes it a standalone project. Demotion removes project linkage and returns the record to DAM status. The DAM is the same knowledge base, not a separate system.
+**Rationale:** An asset may stop working within a project context and need to be returned to unaffiliated status without being deleted. The DAM provides a persistent home for all material regardless of project affiliation.
+---
+## ADR-013 — Handoff filename format is YYYY-MM-DD_HHMM
+**Status:** Locked
+**Decision:** Session handoff files are named using timestamp format YYYY-MM-DD_HHMM.
+**Rationale:** Ensures chronological sorting and unambiguous session identification.
+---
+## ADR-014 — Handoff written to active project folder on session close
+**Status:** Locked
+**Decision:** The session close protocol writes the handoff file directly to the active project folder.
+**Rationale:** Keeps handoff co-located with project context rather than in a generic location.
+---
+## ADR-015 — Session Close Protocol embedded in handoff content
+**Status:** Locked
+**Decision:** The session close protocol is embedded in the handoff file itself. A standalone protocol file is no longer required.
+**Rationale:** Reduces file proliferation and keeps protocol with the artifact it governs.
+---
+## ADR-016 — Notes field has qualifying criteria
+**Status:** Locked
+**Decision:** The Notes field in session close captures: deferred decisions, warnings, gotchas, and mid-thought work. It does not capture next steps.
+**Rationale:** Prevents Notes from becoming a duplicate of Next Steps and preserves its signal value.
+---
+## ADR-017 — Pipeline project association via project_id
+**Status:** Locked
+**Decision:** project_id is wired through the intake POST in HTML and Python route to cis_intake.py via --project flag.
+**Rationale:** Ensures every ingested source is project-aware from the moment of intake.
+---
+## ADR-018 — Archive file browser added to intake panel
+**Status:** Locked
+**Decision:** A navigable file browser scoped to /mnt/archive is available in the pipeline intake panel. Clicking a file populates the path field.
+**Rationale:** Removes need to manually type archive paths during intake.
+---
+## ADR-020 — Review page is the human validation surface for ingested assets
+**Status:** Locked
+**Decision:** Every ingested source has a dedicated review page showing the source image at full viewport height on the left and editable knowledge record fields on the right. The page is the point where AI-proposed metadata is confirmed, corrected, or rejected by the human before the record is promoted.
+**Rationale:** AI extraction produces draft records only. Human correction at the review stage is required before any record is trusted. The review page is the primary interface where Loop 3 (system learning) activates — corrections made here become the authoritative version of the record.
+---
+## ADR-021 — CIS Live — active session only broadcast
+**Status:** Accepted
+**Decision:** CIS_LIVE.md publishes only the currently selected problem session.
+**Rationale:** Prevents model confusion when multiple sessions exist. All other problems remain in DB only.
+---
+## ADR-022 — CIS Live — round compression toggle
+**Status:** Accepted
+**Decision:** Compact mode toggle strips earlier rounds from the .md broadcast after round 3.
+**Rationale:** Full history on session start. After round 3 models already have earlier rounds in context. Problem statement always retained at top regardless of toggle state.
+---
+## ADR-023 — CIS Live — copy prompt replaces copy URL
+**Status:** Accepted
+**Decision:** Push generates a ready-to-paste prompt per model, not a bare URL.
+**Rationale:** Bare URL gives models no instruction context. Prompt includes: live URL, problem name, current round number, and model role. Removes ambiguity about intent.
+---
+## ADR-024 — CIS Live — dynamic model roster replaces hardcoded slots
+**Status:** Accepted
+**Decision:** Per-round model roster replaces hardcoded Gemini, Claude, ChatGPT fields.
+**Rationale:** Hardcoded slots break when adding DeepSeek, Mistral, Llama, Grok or local models. Roster is defined at session creation and overridable per round. Models are registered objects in the DB.
+---
+## ADR-025 — Model registry connects Intel sidebar tabs to Live roster
+**Status:** Accepted
+**Decision:** LOCAL, REMOTE, AGENT sidebar tabs become functional via shared model registry.
+**Rationale:** Tabs are currently decorative. Dynamic roster draws from same registry making them functional. First wire between sidebar and execution layer. Sets up Phase 0 local model invocation.
+---
+## ADR-026 — Sequential build path to Phase 0
+**Status:** Accepted
+**Decision:** Three-step path from current state to Phase 0 execution layer entry.
+**Rationale:** Step 1: Fix Live session logic — prompt generation, active-session-only push, round compression. Step 2: Replace hardcoded model slots with dynamic registry tied to Intel sidebar. Step 3: Local model invocation — registry entries get invoke button, first real execution layer wire.
+---
+## ADR-027 — Backend refactored into modular structure
+**Status:** Accepted
+**Decision:** CIS dashboard backend split from single file into modular directory structure.
+**Rationale:** Single file was becoming unmanageable. Modular structure: app.py entry point, config.py constants, api/ with 10 route modules, db/ with connection and live_db, utils/ with helpers. Allows each capability to be modified and tested in isolation. Aligns with sequential build principle.
+---
+## ADR-028 — Session lifecycle and Live scratchpad are distinct surfaces
+**Status:** Accepted
+**Decision:** Session panel handles day-level lifecycle. Live panel handles real-time problem-solving rounds.
+**Rationale:** Session is the outer container for a day of work. Live is the multi-model scratchpad that runs inside it. Conflating the two would create an overloaded interface. Separation keeps each surface focused on one responsibility.
+---
+## ADR-029 — Manual paste is the confirmed input method for CIS Live model responses
+**Status:** Accepted
+**Decision:** Model responses are pasted manually into the Live panel per slot. Auto-fetch is deferred.
+**Rationale:** Major models do not expose stable public share URLs suitable for programmatic fetch. Building around an unavailable capability adds complexity with no return. Manual paste is fast when the UI is designed for it. Auto-fetch revisited if model APIs make it practical.
 ---
