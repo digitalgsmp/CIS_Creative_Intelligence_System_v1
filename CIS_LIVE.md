@@ -29,6 +29,9 @@ Replace get_raw_url with fixed Cloudflare static URLReplace get_raw_url with fix
 
 [ChatGPT]: and now we have chatgtp talking it long drwan out 5000 wwords that I do not have time to read and just because annoying chatter after a few sentences.
 
+### Round 6 — 2026-04-21 12:46
+[YOU]: right sidebar tested but question not push to cis-live.md. this is a test from the old form to see if the text is sent to .md.
+
 ---
 
 ## Rounds in Right Sidebar — 2026-04-18 23:17 [OPEN]
