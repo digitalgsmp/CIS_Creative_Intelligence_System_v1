@@ -38,6 +38,9 @@ Replace get_raw_url with fixed Cloudflare static URLReplace get_raw_url with fix
 ### Round 8 — 2026-04-21 12:52
 [YOU]: round 8 test from right sidebar. the .md seems to be updated after the copy url button is pushed
 
+### Round 9 — 2026-04-21 12:54
+[YOU]: round 9 test the form field #1 does not update until the log button is clicked. testing just the log button.
+
 ---
 
 ## Rounds in Right Sidebar — 2026-04-18 23:17 [OPEN]
