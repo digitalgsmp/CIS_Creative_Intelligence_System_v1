@@ -17,6 +17,9 @@ Replace get_raw_url with fixed Cloudflare static URLReplace get_raw_url with fix
 ### Round 3 — 2026-04-21 02:36
 [YOU]: This is test 4 I think
 
+### Round 4 — 2026-04-21 02:51
+[YOU]: I think the right sidebar should have the same style as the right sidebar with the tabs across the top to switch between the sections instead of them all being in the sidebar together there could be two rows of tabs if possibleoverview have them all present like the mockup shows, pipeline, knowledge, tasks, live, decisions. On the bottom slightly modified should be the assett library(DAM), and instead of Pipeline - active sources, it could be active projects.
+
 ---
 
 ## Rounds in Right Sidebar — 2026-04-18 23:17 [OPEN]
