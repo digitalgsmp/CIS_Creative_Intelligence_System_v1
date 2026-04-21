@@ -32,6 +32,9 @@ Replace get_raw_url with fixed Cloudflare static URLReplace get_raw_url with fix
 ### Round 6 — 2026-04-21 12:46
 [YOU]: right sidebar tested but question not push to cis-live.md. this is a test from the old form to see if the text is sent to .md.
 
+### Round 7 — 2026-04-21 12:48
+[YOU]: this is the second test from the sidebar to see if it works but went unseen becaus is appended the .md form in the middle of the page instead of at the top.
+
 ---
 
 ## Rounds in Right Sidebar — 2026-04-18 23:17 [OPEN]
