@@ -1,6 +1,15 @@
 # CIS_LIVE — Active Scratchpad
 Format: Bullets | 15 lines max | Newest first | Ends with ACTION
 
+## New Layout test01 — 2026-04-21 01:38 [OPEN]
+Problem: test if new layout works with manual paste, then commit
+Tags: new layout, test problem 01
+
+### Round 1 — 2026-04-21 01:39
+[YOU]: this is a test01 fro mulit-platform ai inferencetest
+
+---
+
 ## Rounds in Right Sidebar — 2026-04-18 23:17 [OPEN]
 Problem: I would also not like to scroll to paste to the rounds
 Tags: right, sidebar
