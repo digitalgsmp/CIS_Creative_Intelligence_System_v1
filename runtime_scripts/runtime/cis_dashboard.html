@@ -2390,6 +2390,7 @@ function IntelSidebar({ collapsed, onToggle, activePanel }) {
   const [syncStatus,   setSyncStatus]   = useState('');
   const [addingRound,  setAddingRound]  = useState(false);
   const [copiedUrl,    setCopiedUrl]    = useState(false);
+  
 
   const LIVE_URL = 'https://creative-intelligence-system.com';
 
@@ -2474,20 +2475,34 @@ function IntelSidebar({ collapsed, onToggle, activePanel }) {
   const hint = txt => e('div', { style:{ fontFamily:'var(--mono)', fontSize:9,
     color:'var(--text-dim)', paddingLeft:28, marginTop:-4 } }, txt);
 
-  const LOCAL_MODELS = [
-    { name: 'Qwen2.5-VL 32B', role: 'Vision \u00b7 OCR \u00b7 Extract', badge: 'local',  load: 72, color: 'var(--accent-green)', active: true  },
-    { name: 'Qwen2.5 7B',     role: 'Normalize \u00b7 Classify',         badge: 'local',  load: 15, color: 'var(--accent-green)', active: false },
-  ];
-  const REMOTE_MODELS = [
-    { name: 'Claude Sonnet', role: 'Intelligence \u00b7 Review',   badge: 'remote', load: 40, color: 'var(--accent-cyan)', active: true  },
-    { name: 'Gemini 2.0',   role: 'Multi-modal \u00b7 Synthesis', badge: 'remote', load: 0,  color: 'var(--accent-cyan)', active: false },
-    { name: 'ChatGPT 4o',   role: 'Reasoning \u00b7 Live',        badge: 'remote', load: 0,  color: 'var(--accent-cyan)', active: false },
-  ];
-  const AGENTS = [
-    { name: 'Librarian',  role: 'Knowledge retrieval', badge: 'idle', load: 0, color: 'var(--accent-purple)' },
-    { name: 'Teacher',    role: 'Production guidance', badge: 'idle', load: 0, color: 'var(--accent-purple)' },
-    { name: 'Researcher', role: 'Source analysis',     badge: 'idle', load: 0, color: 'var(--accent-purple)' },
-  ];
+  const [modelRegistry, setModelRegistry] = useState({ local: [], remote: [], agent: [] });
+  const [modelsLoading, setModelsLoading] = useState(true);
+
+  React.useEffect(() => {
+    fetch('/api/models')
+      .then(r => r.json())
+      .then(data => {
+        setModelRegistry(data.models || { local: [], remote: [], agent: [] });
+        setModelsLoading(false);
+      })
+      .catch(() => setModelsLoading(false));
+     }, []
+  );
+
+  const normalizeModel = (m, tier) => ({
+    name:   m.name,
+    role:   [m.capability.split(',').join(' \u00b7 '), m.size_params].filter(Boolean).join(' \u00b7 '),
+    badge:  tier === 'agent' ? 'idle' : tier,
+    load:   0,
+    color:  tier === 'local'  ? 'var(--accent-green)'
+          : tier === 'remote' ? 'var(--accent-cyan)'
+          : 'var(--accent-purple)',
+    active: m.status === 'active',
+    runtime_status: m.runtime_status,
+    status: m.status,
+    notes:  m.notes,
+      }
+    );
 
   const ModelCard = ({ m }) =>
     e('div', { className: `model-card ${m.active ? 'active-model' : ''}` },
@@ -2496,14 +2511,22 @@ function IntelSidebar({ collapsed, onToggle, activePanel }) {
         e('div', { className: `model-badge ${m.badge}` }, m.badge.toUpperCase())
       ),
       e('div', { className: 'model-role' }, m.role),
+      m.runtime_status && e('div', {
+        style: {
+          fontSize: 9, fontFamily: 'var(--mono)', marginTop: 3,
+          color: m.runtime_status === 'loaded'       ? 'var(--accent-green)'
+               : m.runtime_status === 'available'    ? 'var(--text-secondary)'
+               : m.runtime_status === 'manual'       ? 'var(--accent-cyan)'
+               : m.runtime_status === 'not_implemented' ? 'var(--text-dim)'
+               : 'var(--text-dim)'
+        }
+      }, m.runtime_status.toUpperCase()),
       m.load > 0 && e('div', { className: 'model-bar' },
         e('div', { className: 'model-bar-fill', style: { width: m.load + '%', background: m.color } })
       )
     );
 
-  const models = activeTab === 'local' ? LOCAL_MODELS
-               : activeTab === 'remote' ? REMOTE_MODELS
-               : AGENTS;
+  const models = (modelRegistry[activeTab] || []).map(m => normalizeModel(m, activeTab));
 
   const renderLiveTab = () => {
     const taStyle = (color) => ({
