@@ -2554,9 +2554,25 @@ function IntelSidebar({ collapsed, onToggle, activePanel }) {
               syncing ? '\u27f3' : '\u2191 Save Question + Push'),
             e('button', { className:'btn btn-secondary',
               style:{ padding:'6px 8px', fontSize:10, whiteSpace:'nowrap' },
-              onClick:()=>{ navigator.clipboard.writeText(LIVE_URL); setCopiedUrl(true);
-                setTimeout(()=>setCopiedUrl(false),2000); } },
-              copiedUrl ? '\u2713 Copied' : '\ud83d\udd17 Copy URL')
+             onClick:()=>{
+            if (!active) return;
+            const s = active.session;
+            const FORMAT = `Read this and answer in 15 lines max, bullets only, end with ACTION.\nAppend your response in format: ## [ModelName] HH:MM\n\n`;
+            let text = FORMAT + `Topic: ${s.topic}\nProblem: ${s.problem}\n`;
+            if (s.tags) text += `Tags: ${s.tags}\n`;
+            active.rounds.forEach(r => {
+              text += `\n--- Round ${r.round_number} ---\n`;
+              if (r.your_message)  text += `YOU: ${r.your_message}\n`;
+              if (r.consolidated)  text += `RESPONSES: ${r.consolidated}\n`;
+              if (r.gemini)        text += `Gemini: ${r.gemini}\n`;
+              if (r.claude)        text += `Claude: ${r.claude}\n`;
+              if (r.chatgpt)       text += `ChatGPT: ${r.chatgpt}\n`;
+            });
+            navigator.clipboard.writeText(text);
+            setCopiedUrl(true);
+            setTimeout(()=>setCopiedUrl(false), 2000);
+          } },
+          copiedUrl ? '\u2713 Copied' : '\u270d Copy Prompt')
           ),
           syncStatus && e('div', { style:{ fontFamily:'var(--mono)', fontSize:9, paddingLeft:26,
             color: syncStatus.startsWith('\u2713')?'var(--accent-green)':'var(--accent-red)' } }, syncStatus),
