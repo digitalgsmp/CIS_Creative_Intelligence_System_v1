@@ -1,5 +1,5 @@
 # CIS Architecture Decision Records
-Last updated: 2026-04-22
+Last updated: 2026-04-23
 ---
 ## ADR-001 — Qwen2.5-VL-32B is the primary extraction model
 **Status:** Locked
@@ -150,4 +150,9 @@ Last updated: 2026-04-22
 **Status:** Accepted
 **Decision:** Model responses are pasted manually into the Live panel per slot. Auto-fetch is deferred.
 **Rationale:** Major models do not expose stable public share URLs suitable for programmatic fetch. Building around an unavailable capability adds complexity with no return. Manual paste is fast when the UI is designed for it. Auto-fetch revisited if model APIs make it practical.
+---
+## ADR-030 — WIAS Project Manager is the foundational design reference for CIS
+**Status:** Locked
+**Decision:** The WIAS Project Manager workbook (version 1) is designated as a foundational reference document for the CIS system. It predates the LLM era and represents the original analogue design intent for a creative project management system across Word, Image, Action, Sound, and Web domains. Its taxonomy, workflow states, project object model, genre classifications, user levels, and production schedule structure are the design origin of the CIS knowledge schema, WIAS routing model, and project object. It is added to the Claude project files for session context and will be formally ingested as a knowledge_record (category: reference, subject: system_design) during the first real archive run.
+**Rationale:** CIS is the AI-era implementation of the system designed in the WIAS workbook. Without this document in the system record, the design lineage is invisible to future sessions and collaborating models. The workbook's data model — projects, ideas, research, reference, learning, templates, checklists, genres, media types, user levels — directly informs the knowledge_record schema, processing profiles, WIAS stage routing, and the AI inference layer on project objects. It must be in the ADR record so its authority is explicit and traceable.
 ---

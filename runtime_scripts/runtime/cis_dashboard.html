@@ -2199,8 +2199,25 @@ function LivePanel({ projectId }) {
             active.session.status === 'open' && e('button', {
               className:'btn btn-success', style:{padding:'4px 12px', fontSize:10},
               onClick:()=>setShowResolve(s=>!s) },
-              showResolve ? '✕ Cancel' : '✓ Resolve Session')
+             showResolve ? '✕ Cancel' : '✓ Resolve Session')
           ),
+
+          showResolve && e('div', { className:'card', style:{ margin:'0 0 8px 0', borderColor:'var(--accent-green)' } },
+            lbl('Solution'),
+            ta(80, solution, setSolution, 'What was decided or built?'),
+            e('div', { style:{ display:'flex', gap:8, marginTop:8, alignItems:'center' } },
+              lbl('Decided by:'),
+              e('input', { value:decidedBy, onChange:ev=>setDecidedBy(ev.target.value),
+                style:{ fontFamily:'var(--mono)', fontSize:11, background:'var(--bg-base)',
+                  border:'1px solid var(--border)', borderRadius:4, color:'var(--text-primary)',
+                  padding:'4px 8px', flex:1 } })
+            ),
+            e('button', { className:'btn btn-success', style:{ marginTop:8, width:'100%' },
+              onClick: resolve, disabled: !solution.trim() },
+              '✓ Confirm Resolution')
+          ),
+
+          // Scrollable thread
 
           // Scrollable thread
           e('div', { style:{ flex:1, overflowY:'auto', paddingRight:4 } },
