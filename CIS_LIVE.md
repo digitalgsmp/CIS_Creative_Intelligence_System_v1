@@ -19,4 +19,7 @@ TAGS
 architecture, scope, ADR-032, domain-taxonomy, knowledge-spine
 Hit Create, then confirm and I will draft ADR-032.
 
+### Round 5 — 2026-04-24 05:15
+[YOU]: Architecture clarification: knowledge records are file-based, not DB-based. Where does anchor_node_id live?
+
 ---
