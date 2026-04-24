@@ -1,5 +1,5 @@
 # CIS Architecture Decision Records
-Last updated: 2026-04-23
+Last updated: 2026-04-24
 ---
 ## ADR-001 — Qwen2.5-VL-32B is the primary extraction model
 **Status:** Locked
@@ -155,4 +155,14 @@ Last updated: 2026-04-23
 **Status:** Locked
 **Decision:** The WIAS Project Manager workbook (version 1) is designated as a foundational reference document for the CIS system. It predates the LLM era and represents the original analogue design intent for a creative project management system across Word, Image, Action, Sound, and Web domains. Its taxonomy, workflow states, project object model, genre classifications, user levels, and production schedule structure are the design origin of the CIS knowledge schema, WIAS routing model, and project object. It is added to the Claude project files for session context and will be formally ingested as a knowledge_record (category: reference, subject: system_design) during the first real archive run.
 **Rationale:** CIS is the AI-era implementation of the system designed in the WIAS workbook. Without this document in the system record, the design lineage is invisible to future sessions and collaborating models. The workbook's data model — projects, ideas, research, reference, learning, templates, checklists, genres, media types, user levels — directly informs the knowledge_record schema, processing profiles, WIAS stage routing, and the AI inference layer on project objects. It must be in the ADR record so its authority is explicit and traceable.
+---
+## ADR-031 — Segment as canonical execution object; scene detection required; fixed interval rejected
+**Status:** Locked
+**Decision:** Segment is the discrete video unit that passes through the extraction pipeline — the video analog of a single image file. Scene detection (PySceneDetect) is the required segmentation method. Fixed-interval segmentation is explicitly rejected — it crosses scene boundaries and degrades extraction quality.
+**Rationale:** Video cannot be treated as a single intake unit. Division method has direct consequences for schema, pipeline design, and knowledge record quality. Content-boundary segmentation preserves extraction context. Fixed interval does not.
+---
+## ADR-032 — CIS domain taxonomy: LIFE and CREATION as top-level domains; knowledge_spine as first-class object
+**Status:** Locked
+**Decision:** CIS contains two top-level domains: LIFE (Home, Body, Mind) and CREATION (Word, Image, Action, Sound, Web). WIAS is retained as the historical name for CREATION only. Every project belongs to one sub-domain. The project schema is universal across all domains. knowledge_spine is a first-class CIS object — an authoritative knowledge structure for a domain or production step, ingested before source material. spine_node is the atomic concept unit within a spine, hierarchical and multi-source. knowledge_record gains anchor_node_id linking each record to its spine position. Unanchored records cannot reach approved status. Build sequence: CREATION spines and pipelines proven first; LIFE domains designed now, built later.
+**Rationale:** The WIAS Project Manager was designed as a life and creation management system, not a creative production system only. Home, Body, and Mind run as equal schedule domains alongside Word, Image, Action, Sound, Web. Everything resolves into a project regardless of domain. Flat knowledge record storage does not support retrieval at scale — records must be anchored to authoritative domain knowledge structures to be useful. Splitting LIFE into a separate application would re-fragment a system that was unified by design.
 ---
