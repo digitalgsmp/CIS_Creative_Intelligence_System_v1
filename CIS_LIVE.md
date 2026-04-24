@@ -13,4 +13,10 @@ Problem: Phase 0 exit criteria met. Phase 1 begins now. Build target is: (1) wri
 ### Round 3 — 2026-04-24 03:58
 [YOU]: CIS scope expanded from creative production to full life and creation management system
 
+### Round 4 — 2026-04-24 03:58
+[RESPONSES]: During analysis of the WIAS Project Manager spreadsheet, the Home/Body/Mind schedule domains were identified as full first-class domains alongside WIAS. The original system was conceived as a life/creation management system, not only a creative production system. Decision required: integrate LIFE domains into CIS or build an adjoining application. Decision made: Path A — CIS is the container for both LIFE (Home, Body, Mind) and CREATION (Word, Image, Action, Sound, Web). WIAS was the previous container name for Creation only. Build sequence: CREATION pipeline proven first, LIFE domains deferred. ADR-032 to be written to lock domain taxonomy and knowledge spine model.
+TAGS
+architecture, scope, ADR-032, domain-taxonomy, knowledge-spine
+Hit Create, then confirm and I will draft ADR-032.
+
 ---
