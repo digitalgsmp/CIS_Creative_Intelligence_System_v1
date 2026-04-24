@@ -22,4 +22,7 @@ Hit Create, then confirm and I will draft ADR-032.
 ### Round 5 — 2026-04-24 05:15
 [YOU]: Architecture clarification: knowledge records are file-based, not DB-based. Where does anchor_node_id live?
 
+### Round 6 — 2026-04-24 05:15
+[RESPONSES]: CIS uses two parallel storage systems by design, not by accident. The SQLite DB holds operational data: decisions, sessions, tasks, live rounds, extraction runs, captures, models, spines, nodes, segments. Knowledge records are file-based: one folder per record containing a JSON file (machine-readable, pipeline input/output) and an MD file (human-readable, Obsidian vault). The dashboard reads records directly from disk via the file API — there is no knowledge_records DB table and none is needed. The JSON files ARE the records. The MD files are the human-readable mirror. anchor_node_id belongs in the knowledge_v1.json schema file so every new record produced by the pipeline carries it. Existing records on disk do not need it until re-processed against a spine. No rollback. No conflict. DB = operational state. JSON/MD = knowledge content.
+
 ---
