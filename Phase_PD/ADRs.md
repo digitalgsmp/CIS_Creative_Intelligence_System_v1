@@ -1,5 +1,5 @@
 # CIS Architecture Decision Records
-Last updated: 2026-04-25
+Last updated: 2026-04-26
 ---
 ## ADR-001 — Qwen2.5-VL-32B is the primary extraction model
 **Status:** Locked
@@ -165,4 +165,9 @@ Last updated: 2026-04-25
 **Status:** Locked
 **Decision:** CIS contains two top-level domains: LIFE (Home, Body, Mind) and CREATION (Word, Image, Action, Sound, Web). WIAS is retained as the historical name for CREATION only. Every project belongs to one sub-domain. The project schema is universal across all domains. knowledge_spine is a first-class CIS object — an authoritative knowledge structure for a domain or production step, ingested before source material. spine_node is the atomic concept unit within a spine, hierarchical and multi-source. knowledge_record gains anchor_node_id linking each record to its spine position. Unanchored records cannot reach approved status. Build sequence: CREATION spines and pipelines proven first; LIFE domains designed now, built later.
 **Rationale:** The WIAS Project Manager was designed as a life and creation management system, not a creative production system only. Home, Body, and Mind run as equal schedule domains alongside Word, Image, Action, Sound, Web. Everything resolves into a project regardless of domain. Flat knowledge record storage does not support retrieval at scale — records must be anchored to authoritative domain knowledge structures to be useful. Splitting LIFE into a separate application would re-fragment a system that was unified by design.
+---
+## ADR-033 — Verification Layer — Proof of Work Required Before Advancing
+**Status:** Locked
+**Decision:** Every significant build action (file write, schema change, record creation, protocol update) requires a Claude-generated completion manifest and a deterministic script verification pass before the session advances. The manifest lists exact file paths, expected content markers, and action type. The verifier script checks each claim against disk reality and produces a pass/fail report. Semantic verification via local reasoning model (Qwen2.5-32B) is a planned enhancement. No session may close with unverified work in the completed list.
+**Rationale:** Repeated discovery of placeholder content, omitted fields, and incomplete writes across build sessions is causing rework and eroding trust in session output. Claude and all LLMs are unreliable self-reporters of task completion. A deterministic verification layer closes the gap between what Claude reports and what actually exists on disk. This is Pre-Development Harness infrastructure — it belongs in Phase PD alongside the session close protocol and handoff format, not deferred to a later phase.
 ---
