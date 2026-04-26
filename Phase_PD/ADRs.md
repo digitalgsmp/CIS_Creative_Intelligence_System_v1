@@ -186,3 +186,45 @@ Last updated: 2026-04-26
 **Decision:** CIS is architected toward local-first inference with frontier models in a verification and improvement role, not a primary inference role. Three phases: Phase A — frontier models build and verify, local models assist, knowledge base accumulates. Phase B — local stack takes primary inference, frontier models verify and audit. Phase C — local stack plus vectorized memory is primary, frontier models are high-stakes consultants only. The knowledge base (SQLite moving to vectorized DB plus Obsidian) is the memory layer that enables this transition. Accumulating verified structured knowledge is the primary long-term build objective. All infrastructure decisions should be evaluated against this maturity arc.
 **Rationale:** The goal is a sovereign machine that thinks with its own accumulated knowledge. Frontier models are expensive, external, and outside the system's control. Local inference plus a strong memory layer is the path to independence. The transition is gradual — frontier models earn their way out by improving the local system until it no longer needs them as primary workers.
 ---
+## ADR-037 — Source Manifest Contract v2.1 locked as Phase 0 gate document
+**Status:** Locked
+**Decision:** Source manifest contract written, verified Layer 1 (PASS), and audited 
+Layer 3 by separate frontier model over three passes (FAIL, FAIL, PASS). 
+Contract defines canonical fields, mutability matrix, state machine with 
+transition table, deduplication rule, processing_plan required structure, 
+and zero-or-many lineage cardinality. File at 
+/mnt/projects/cis/docs/contracts/CIS Source Manifest Contract.md
+**Rationale:** Source manifest is the control object for all intake (ADR-007). A locked 
+contract is required before Phase 1 begins. Three-pass audit process 
+caught real implementation gaps: undefined processing_plan structure, 
+missing mutability constraints, incorrect lineage cardinality. The 
+verification process worked as designed.
+---
+## ADR-038 — Processing Profile Contract v1.1 locked as Phase 0 gate document
+**Status:** Locked
+**Decision:** Processing profile contract written, verified Layer 1 (PASS), and audited
+Layer 3 by separate frontier model over two passes (FAIL, PASS). Contract
+defines six profiles, two-step assignment (intake safe default + classifier
+confirmation), three extraction paths, no-op preprocess rule for idea_note,
+and artifact clearing rule for late-stage profile changes. File at
+/mnt/projects/cis/docs/contracts/CIS Processing Profile Contract.md
+**Rationale:** Processing profile is a required field in the source manifest (ADR-037).
+A locked contract is required before Phase 1 begins. Audit caught real
+implementation gaps: invalid source_type value, ambiguous assignment timing,
+illegal state transition for idea_note, and incomplete artifact clearing rule.
+Two-pass verification process worked as designed.
+---
+## ADR-039 — Review States Contract v1.1 locked as Phase 0 gate document
+**Status:** Locked
+**Decision:** Review states contract written, verified Layer 1 (PASS), and audited
+Layer 3 by separate frontier model over two passes (FAIL, PASS). Contract
+defines five review states, promotion path, demotion rules, deprecation
+as terminal, retrieval priority order, versioning interaction separated
+from state transitions, and is_current behavior on deprecation. File at
+/mnt/projects/cis/docs/contracts/CIS Review States Contract.md
+**Rationale:** Review states govern human validation of knowledge_record objects — required
+before Phase 1 produces records that need to be trusted. Audit caught real
+implementation gaps: state transitions incorrectly triggered versioning,
+is_current behavior on deprecation was undefined, and deprecated terminal
+status was contradicted by the allowed states list.
+---
