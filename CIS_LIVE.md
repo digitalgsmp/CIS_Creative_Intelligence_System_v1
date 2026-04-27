@@ -1,28 +1,8 @@
 # CIS_LIVE — Active Scratchpad
 Format: Bullets | 15 lines max | Newest first | Ends with ACTION
 
-## Phase 1 Open — Segment canonical object + PySceneDetect — 2026-04-24 02:04 [OPEN]
-Problem: Phase 0 exit criteria met. Phase 1 begins now. Build target is: (1) write ADR-031, (2) define Segment schema + DB table, (3) install and smoke-test PySceneDetect. Expected return point to main path: Segment defined, scene detection confirmed functional, batch extraction design begun.
-
-### Round 1 — 2026-04-24 03:56
-[YOU]: extraction quality requires finer granularity than a full scene. if this will be discovered when the knowledge records are trying to be used in real time, this is too late because we would go from ready to use CIS back to developing CIS.
-
-### Round 2 — 2026-04-24 03:56
-[RESPONSES]: Scene detection is the primary segmentation method. A duration-based fallback split is required for segments or source units exceeding a defined threshold. Segmentation policy (thresholds, merge floor, quality gate criteria) is defined and validated before extraction scales.
-
-### Round 3 — 2026-04-24 03:58
-[YOU]: CIS scope expanded from creative production to full life and creation management system
-
-### Round 4 — 2026-04-24 03:58
-[RESPONSES]: During analysis of the WIAS Project Manager spreadsheet, the Home/Body/Mind schedule domains were identified as full first-class domains alongside WIAS. The original system was conceived as a life/creation management system, not only a creative production system. Decision required: integrate LIFE domains into CIS or build an adjoining application. Decision made: Path A — CIS is the container for both LIFE (Home, Body, Mind) and CREATION (Word, Image, Action, Sound, Web). WIAS was the previous container name for Creation only. Build sequence: CREATION pipeline proven first, LIFE domains deferred. ADR-032 to be written to lock domain taxonomy and knowledge spine model.
-TAGS
-architecture, scope, ADR-032, domain-taxonomy, knowledge-spine
-Hit Create, then confirm and I will draft ADR-032.
-
-### Round 5 — 2026-04-24 05:15
-[YOU]: Architecture clarification: knowledge records are file-based, not DB-based. Where does anchor_node_id live?
-
-### Round 6 — 2026-04-24 05:15
-[RESPONSES]: CIS uses two parallel storage systems by design, not by accident. The SQLite DB holds operational data: decisions, sessions, tasks, live rounds, extraction runs, captures, models, spines, nodes, segments. Knowledge records are file-based: one folder per record containing a JSON file (machine-readable, pipeline input/output) and an MD file (human-readable, Obsidian vault). The dashboard reads records directly from disk via the file API — there is no knowledge_records DB table and none is needed. The JSON files ARE the records. The MD files are the human-readable mirror. anchor_node_id belongs in the knowledge_v1.json schema file so every new record produced by the pipeline carries it. Existing records on disk do not need it until re-processed against a spine. No rollback. No conflict. DB = operational state. JSON/MD = knowledge content.
+## Verification UI gap — no dashboard surface for verification status — 2026-04-26 22:56 [OPEN]
+Problem: cis_verify.py is operational but verification is terminal-only. The dashboard has no way to view the verification log, submit manifests, or see pass/fail status on pipeline actions. As Phase 1 produces real output, verification becomes load-bearing. A UI surface is needed before the verification layer can be considered production-ready. This is a branch observation — not blocking the intake run, expected return point is after Phase 1 intake is proven.
+Tags: verification, phase-1, ui, adr-033
 
 ---
