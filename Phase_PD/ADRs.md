@@ -1,5 +1,5 @@
 # CIS Architecture Decision Records
-Last updated: 2026-04-26
+Last updated: 2026-04-27
 ---
 ## ADR-001 — Qwen2.5-VL-32B is the primary extraction model
 **Status:** Locked
@@ -227,4 +227,14 @@ before Phase 1 produces records that need to be trusted. Audit caught real
 implementation gaps: state transitions incorrectly triggered versioning,
 is_current behavior on deprecation was undefined, and deprecated terminal
 status was contradicted by the allowed states list.
+---
+## ADR-040 — Layer 3 Audit is a Mandatory Completion Gate for All Build Actions
+**Status:** Locked
+**Decision:** No build action is considered complete until a Layer 3 audit has been logged as a resolved round in the active CIS Live session. This applies to every action that produces a manifest — scripts, contracts, schema changes, reorientation updates, pipeline runs, and knowledge record promotions. Audit validity requires: the auditor_model_id must differ from the builder_model_id recorded in the artifact manifest (ADR-034 role separation), the auditor must be selected from the active CIS model roster, the auditor must be assigned an audit or validator role for that run, full prompt and response logged verbatim, explicit PASS verdict in dedicated verdict field, at least 3 substantive failure modes evaluated, and the full 64-char sha256 of the artifact must appear in the audit round. CONDITIONAL does not satisfy the gate. Model eligibility is determined by the model roster — not a hardcoded name list. Any rostered model assigned to the auditor role is a valid auditor.
+**Rationale:** ADR-033 and ADR-034 established the three-layer verification architecture and role separation. In practice, Layer 3 was consistently skipped because it was not embedded in the session close checklist as a hard gate. This ADR closes that gap. Locked via self-bootstrapping clause — the adversarial audit chain that produced this document (v1 FAIL, v2 CONDITIONAL PASS, v3 PASS from both ChatGPT and Gemini) constitutes the first compliant Layer 3 audit record in CIS history.
+---
+## ADR-041 — Artifact Registry: Canonical SHA Binding Schema
+**Status:** Locked
+**Decision:** A manifests table in cis_memory.db is the canonical artifact registry. Every build action that produces a manifest writes a record to this table at Layer 1 verification time. Fields include artifact_id, sha256, artifact_type, artifact_name, artifact_path, session_id, sequence, action, timestamp, builder_model_id, manifest_path, raw_manifest. builder_model_id is required for role separation enforcement per ADR-040. The live_rounds table requires four new columns: verdict, model_name, prompt, response. SHA binding for all audit validation reads from this table — circular extraction from audit rounds is permanently rejected. Model eligibility deferred to model roster per ADR-040.
+**Rationale:** ADR-040 requires artifact-to-audit SHA binding. The only non-circular implementation is an independent SHA registry written before the audit occurs. SQLite in cis_memory.db (ADR-004) is the correct location. The manifests table serves as that registry. live_rounds columns are required for strict verdict parsing and audit round validation. Pending Layer 3 audit completion — Gemini re-audit of v11 package required at next session start before VM deployment.
 ---
