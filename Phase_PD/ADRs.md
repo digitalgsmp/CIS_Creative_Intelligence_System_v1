@@ -238,3 +238,12 @@ status was contradicted by the allowed states list.
 **Decision:** A manifests table in cis_memory.db is the canonical artifact registry. Every build action that produces a manifest writes a record to this table at Layer 1 verification time. Fields include artifact_id, sha256, artifact_type, artifact_name, artifact_path, session_id, sequence, action, timestamp, builder_model_id, manifest_path, raw_manifest. builder_model_id is required for role separation enforcement per ADR-040. The live_rounds table requires four new columns: verdict, model_name, prompt, response. SHA binding for all audit validation reads from this table — circular extraction from audit rounds is permanently rejected. Model eligibility deferred to model roster per ADR-040.
 **Rationale:** ADR-040 requires artifact-to-audit SHA binding. The only non-circular implementation is an independent SHA registry written before the audit occurs. SQLite in cis_memory.db (ADR-004) is the correct location. The manifests table serves as that registry. live_rounds columns are required for strict verdict parsing and audit round validation. Pending Layer 3 audit completion — Gemini re-audit of v11 package required at next session start before VM deployment.
 ---
+## ADR-042 — Runtime Split: vLLM for Reasoning/Verification, transformers+bnb for Vision Extraction
+**Status:** Locked
+**Decision:** Two distinct runtimes serve different model roles.
+
+transformers+bitsandbytes (gpu-test env): vision-language extraction only — Qwen2.5-VL-32B-Instruct-4bit. ADR-009 governs this runtime. No changes.
+vLLM (cis-vllm env at /mnt/models/vllm-env): all reasoning, verification, and routing slots — Slot 1 (Qwen3-32B-AWQ), Slot 2 (DeepSeek-R1), Slot 3 (MoE fast routing). OpenAI-compatible API endpoint. One model loaded at a time, selected via Intel sidebar LOCAL tab.
+**Rationale:** vLLM failed on the vision-language 32B model at full bfloat16 (ADR-008), leading to ADR-009. Text-only reasoning models have no such constraint. vLLM's OpenAI-compatible API is the correct interface for the CIS Intel routing layer. Runtime split keeps extraction and reasoning concerns fully separated.
+Storage: /mnt/models (232GB, vde) + /mnt/models2 (228GB, vdf) — second drive added 2026-04-27.
+---
