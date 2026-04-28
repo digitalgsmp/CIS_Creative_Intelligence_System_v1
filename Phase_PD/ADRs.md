@@ -247,3 +247,8 @@ vLLM (cis-vllm env at /mnt/models/vllm-env): all reasoning, verification, and ro
 **Rationale:** vLLM failed on the vision-language 32B model at full bfloat16 (ADR-008), leading to ADR-009. Text-only reasoning models have no such constraint. vLLM's OpenAI-compatible API is the correct interface for the CIS Intel routing layer. Runtime split keeps extraction and reasoning concerns fully separated.
 Storage: /mnt/models (232GB, vde) + /mnt/models2 (228GB, vdf) — second drive added 2026-04-27.
 ---
+## ADR-043 — Execution Layer Contract — Authoritative Pipeline Control System
+**Status:** Locked
+**Decision:** CIS_Execution_Layer_Contract_v1.md is locked as the governing contract for all pipeline execution, state transitions, role enforcement, verification requirements per step, and human gate positions. The contract defines a complete state machine, atomic write rules, step ownership locking, three separate log destinations, cold start recovery, terminal state definitions, non-permitted behaviors, and the human authority boundary. No pipeline component may be built before this contract is verified (L1 + L2 + L3).
+**Rationale:** The system had execution components — pipeline scripts, verification chain, model stack, dashboard — but no contract defining how they connect, how state transitions are enforced, or how failures are routed. Without this contract, building the orchestrator would automate untrusted behavior rather than enforcing correct behavior. The contract was developed through three-model collaboration (Claude, ChatGPT), with ChatGPT providing the final structural review that identified 10 critical gaps including state write atomicity, step ownership locking, and terminal state definitions. All gaps resolved before lock.
+---
