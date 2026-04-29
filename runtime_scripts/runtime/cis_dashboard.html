@@ -2266,6 +2266,161 @@ const PANELS = [
   { key:'live',        icon:'⚡', label:'Live' },
 ];
 
+// ── Operator Panel (ADR-044) ───────────────────────────────────────────────────
+function OperatorPanel() {
+  const [slot1Status,  setSlot1Status]  = useState(null);
+  const [verifyResult, setVerifyResult] = useState(null);
+  const [verifying,    setVerifying]    = useState(false);
+  const [starting,     setStarting]     = useState(false);
+  const [nextAction,   setNextAction]   = useState(null);
+  const [filePath,     setFilePath]     = useState('');
+  const [showInput,    setShowInput]    = useState(false);
+
+  const checkSlot1 = async () => {
+    try {
+      const r = await fetch('/api/operator/slot1-health');
+      const d = await r.json();
+      setSlot1Status(d.status);
+    } catch { setSlot1Status('ERROR'); }
+  };
+
+  const startSlot1 = async () => {
+    setStarting(true);
+    try {
+      await fetch('/api/operator/slot1-start', { method: 'POST' });
+      setSlot1Status('STARTING');
+      setTimeout(checkSlot1, 8000);
+    } catch { setSlot1Status('ERROR'); }
+    setStarting(false);
+  };
+
+  const verifyContract = async () => {
+    if (!filePath.trim()) { setShowInput(true); return; }
+    setVerifying(true);
+    setVerifyResult(null);
+    try {
+      const r = await fetch('/api/operator/verify-contract', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ file_path: filePath.trim() })
+      });
+      const d = await r.json();
+      setVerifyResult(d);
+    } catch (err) {
+      setVerifyResult({ overall: 'ERROR', error: err.message });
+    }
+    setVerifying(false);
+  };
+
+  const getNextAction = async () => {
+    try {
+      const r = await fetch('/api/operator/next-action');
+      const d = await r.json();
+      setNextAction(d.next_steps);
+    } catch { setNextAction(['Could not load next steps.']); }
+  };
+
+  const verdictColor = (v) => {
+    if (!v) return 'var(--text-dim)';
+    if (v === 'PASS') return 'var(--accent-green)';
+    if (v === 'FAIL' || v === 'ERROR') return 'var(--accent-red)';
+    if (v === 'L1_PASS_L2_PENDING') return 'var(--accent-amber)';
+    return 'var(--accent-amber)';
+  };
+
+  return e('div', { style: { marginTop: 8 } },
+    e('div', { className: 'deck-section-label' }, '▸ Operator'),
+    e('div', { className: 'deck-grid cols-2', style: { marginBottom: 6 } },
+
+      e('button', {
+        className: 'dk',
+        style: { fontSize: 10, padding: '6px 4px' },
+        onClick: checkSlot1
+      },
+        e('div', { style: { fontSize: 14 } }, '⚙'),
+        e('div', null, 'Slot 1 Health'),
+        slot1Status && e('div', {
+          style: { fontSize: 9, color: slot1Status === 'UP' ? 'var(--accent-green)' : 'var(--accent-red)', marginTop: 2 }
+        }, slot1Status)
+      ),
+
+      e('button', {
+        className: 'dk dk-green',
+        style: { fontSize: 10, padding: '6px 4px' },
+        onClick: startSlot1,
+        disabled: starting
+      },
+        e('div', { style: { fontSize: 14 } }, '▶'),
+        e('div', null, starting ? 'Starting...' : 'Start Slot 1')
+      ),
+
+      e('button', {
+        className: `dk ${verifying ? '' : 'dk-blue'}`,
+        style: { fontSize: 10, padding: '6px 4px', gridColumn: 'span 2' },
+        onClick: verifyContract,
+        disabled: verifying
+      },
+        e('div', { style: { fontSize: 14 } }, '✓'),
+        e('div', null, verifying ? 'Verifying...' : 'Verify Contract'),
+        verifyResult && e('div', {
+          style: { fontSize: 9, color: verdictColor(verifyResult.overall), marginTop: 2 }
+        }, verifyResult.overall)
+      ),
+
+      e('button', {
+        className: 'dk',
+        style: { fontSize: 10, padding: '6px 4px', gridColumn: 'span 2' },
+        onClick: getNextAction
+      },
+        e('div', { style: { fontSize: 14 } }, '→'),
+        e('div', null, 'Next Required Action')
+      )
+    ),
+
+    (showInput || verifyResult) && e('div', { style: { padding: '4px 0' } },
+      e('input', {
+        type: 'text',
+        placeholder: '/mnt/projects/cis/docs/contracts/filename.md',
+        value: filePath,
+        onChange: ev => setFilePath(ev.target.value),
+        style: {
+          width: '100%', fontSize: 10, padding: '4px 6px',
+          background: 'var(--bg-raised)', border: '1px solid var(--border)',
+          color: 'var(--text-primary)', borderRadius: 3, fontFamily: 'var(--mono)'
+        }
+      })
+    ),
+
+    verifyResult && e('div', {
+      style: {
+        fontSize: 10, padding: '6px 8px', marginTop: 4,
+        background: 'var(--bg-raised)', border: '1px solid var(--border)',
+        borderRadius: 3, fontFamily: 'var(--mono)', lineHeight: 1.6
+      }
+    },
+      e('div', { style: { color: verdictColor(verifyResult.overall), fontWeight: 600 } },
+        'Overall: ' + (verifyResult.overall || 'UNKNOWN')),
+      verifyResult.l1 && e('div', {
+        style: { color: verifyResult.l1.verdict === 'PASS' ? 'var(--accent-green)' : 'var(--accent-red)' }
+      }, 'L1: ' + verifyResult.l1.verdict),
+      verifyResult.l2 && e('div', {
+        style: { color: verifyResult.l2.verdict === 'PASS' ? 'var(--accent-green)' : verifyResult.l2.verdict === 'SKIPPED' ? 'var(--text-dim)' : 'var(--accent-amber)' }
+      }, 'L2: ' + verifyResult.l2.verdict),
+      verifyResult.error && e('div', { style: { color: 'var(--accent-red)' } }, verifyResult.error)
+    ),
+
+    nextAction && e('div', {
+      style: {
+        fontSize: 10, padding: '6px 8px', marginTop: 4,
+        background: 'var(--bg-raised)', border: '1px solid var(--border)',
+        borderRadius: 3, lineHeight: 1.6
+      }
+    },
+      nextAction.map((step, i) => e('div', { key: i, style: { color: 'var(--text-secondary)' } }, '→ ' + step))
+    )
+  );
+}
+
 // ── Stream Deck Column ────────────────────────────────────────────────────────
 function StreamDeck({ activePanel, goPanel, collapsed, onToggle }) {
 
@@ -2381,7 +2536,10 @@ function StreamDeck({ activePanel, goPanel, collapsed, onToggle }) {
           e(Dk, { icon:'◼', label:'Close',   colorClass:''          }),
           e(Dk, { icon:'⚑', label:'Handoff', colorClass:'dk-red'    })
         )
-      )
+      ),
+
+      // ── Operator ─────────────────────────────────────────────────
+      e(OperatorPanel, null)
 
     )
   );

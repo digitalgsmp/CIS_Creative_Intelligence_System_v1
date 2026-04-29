@@ -1,5 +1,5 @@
 # CIS Architecture Decision Records
-Last updated: 2026-04-28
+Last updated: 2026-04-29
 ---
 ## ADR-001 — Qwen2.5-VL-32B is the primary extraction model
 **Status:** Locked
@@ -251,4 +251,13 @@ Storage: /mnt/models (232GB, vde) + /mnt/models2 (228GB, vdf) — second drive a
 **Status:** Locked
 **Decision:** CIS_Execution_Layer_Contract_v1.md is locked as the governing contract for all pipeline execution, state transitions, role enforcement, verification requirements per step, and human gate positions. The contract defines a complete state machine, atomic write rules, step ownership locking, three separate log destinations, cold start recovery, terminal state definitions, non-permitted behaviors, and the human authority boundary. No pipeline component may be built before this contract is verified (L1 + L2 + L3).
 **Rationale:** The system had execution components — pipeline scripts, verification chain, model stack, dashboard — but no contract defining how they connect, how state transitions are enforced, or how failures are routed. Without this contract, building the orchestrator would automate untrusted behavior rather than enforcing correct behavior. The contract was developed through three-model collaboration (Claude, ChatGPT), with ChatGPT providing the final structural review that identified 10 critical gaps including state write atomicity, step ownership locking, and terminal state definitions. All gaps resolved before lock.
+---
+## ADR-044 — CIS Operator Abstraction Layer
+**Status:** Locked
+**Decision:** CIS must expose a human-safe operator interface for high-friction execution tasks. Humans must not manually generate manifests, compute hashes, construct verification JSON, route terminal output, or manage multi-step verification sequences. Operator controls are constrained entry points into the Execution Layer and Verification Layer; they may trigger legal actions but may not bypass state, verification, logging, artifact identity, or human gate rules.
+**Rationale:** CIS complexity crossed the threshold where manual orchestration became an operational bottleneck and a verification risk. Human operators were required to manually generate manifests, compute hashes, construct JSON payloads, route terminal output between models, and invoke multi-step verification procedures. This created avoidable friction, increased the probability of malformed artifacts and state drift, and exposed the operator as the primary constraint on execution throughput.
+
+ADR-044 establishes the Operator Abstraction Layer as a controlled human interface over the Execution Layer and Verification Layer. Operator controls reduce cognitive load and procedural error by automating repetitive execution mechanics while preserving all state authority, verification gates, logging requirements, artifact identity rules, and human approval boundaries defined by ADR-043 and related contracts.
+
+This decision separates operational interaction from execution law. Buttons and operator controls may trigger legal execution-layer actions but may not bypass orchestration constraints, state transitions, verification requirements, process records, or audit trails. The Operator Abstraction Layer exists to improve developer ergonomics, reduce context-routing overhead, and enable sustainable sequential-runtime operation under constrained hardware conditions without weakening deterministic verification or governance integrity.
 ---
