@@ -257,6 +257,7 @@
     border-radius: 7px;
     background: var(--bg-raised);
     border: 1px solid var(--border);
+    color: var(--text-primary);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -2333,8 +2334,8 @@ function OperatorPanel() {
     e('div', { className: 'deck-grid cols-2', style: { marginBottom: 6 } },
 
       e('button', {
-        className: 'dk',
-        style: { fontSize: 10, padding: '6px 4px' },
+        className: 'dk dk-amber',
+        style: { fontSize: 11, padding: '10px 6px' },
         onClick: checkSlot1
       },
         e('div', { style: { fontSize: 14 } }, '⚙'),
@@ -2355,8 +2356,8 @@ function OperatorPanel() {
       ),
 
       e('button', {
-        className: `dk ${verifying ? '' : 'dk-blue'}`,
-        style: { fontSize: 10, padding: '6px 4px', gridColumn: 'span 2' },
+        className: 'dk dk-blue',
+        style: { fontSize: 11, padding: '10px 6px' },
         onClick: verifyContract,
         disabled: verifying
       },
@@ -2368,8 +2369,8 @@ function OperatorPanel() {
       ),
 
       e('button', {
-        className: 'dk',
-        style: { fontSize: 10, padding: '6px 4px', gridColumn: 'span 2' },
+        className: 'dk dk-purple',
+        style: { fontSize: 11, padding: '10px 6px' },
         onClick: getNextAction
       },
         e('div', { style: { fontSize: 14 } }, '→'),
