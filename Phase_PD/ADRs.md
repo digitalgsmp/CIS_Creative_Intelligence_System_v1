@@ -266,3 +266,8 @@ This decision separates operational interaction from execution law. Buttons and 
 **Decision:** Introduce an Execution Queue Ownership Layer between the Operator Abstraction Layer (ADR-044) and the Execution Layer (ADR-043). This layer owns job intake, serialized single-worker execution, job state tracking, lock ownership, and resumability on restart via the execution_jobs table and a background worker.
 **Rationale:** Operator routes currently execute runtime scripts directly and synchronously with no job tracking, no serialization enforcement, and no resumability. The hardware constraint (single GPU) must be enforced architecturally, not by convention. The queue worker enforces FIFO single-job execution at the DB level via atomic claiming.
 ---
+## ADR-046 — Automation Reduction Requirement — Every Build Item Must Eliminate One Manual Action
+**Status:** Locked
+**Decision:** Every significant CIS build action must identify and eliminate at least one manual operator action. Builder must produce an AUTOMATION REDUCTION RECORD alongside each Completion Manifest. Missing record blocks verification. Governed by CIS_Automation_Reduction_Contract_v1.md.
+**Rationale:** Manual operator burden has accumulated at every layer of the build. Automation reduction must be a first-class deliverable, not deferred debt. Cognitive load is the target, not keystrokes.
+---
