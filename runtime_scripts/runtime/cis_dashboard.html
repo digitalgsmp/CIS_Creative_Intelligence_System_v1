@@ -2267,15 +2267,23 @@ const PANELS = [
   { key:'live',        icon:'⚡', label:'Live' },
 ];
 
-// ── Operator Panel (ADR-044) ───────────────────────────────────────────────────
+/// ── Operator Panel (ADR-044) ───────────────────────────────────────────────────
 function OperatorPanel() {
   const [slot1Status,  setSlot1Status]  = useState(null);
+  const [flaskStatus,  setFlaskStatus]  = useState(null);
   const [verifyResult, setVerifyResult] = useState(null);
   const [verifying,    setVerifying]    = useState(false);
   const [starting,     setStarting]     = useState(false);
   const [nextAction,   setNextAction]   = useState(null);
   const [filePath,     setFilePath]     = useState('');
   const [showInput,    setShowInput]    = useState(false);
+
+  useEffect(() => {
+    fetch('/api/operator/flask-status')
+      .then(r => r.json())
+      .then(d => setFlaskStatus(d.status))
+      .catch(() => setFlaskStatus('ERROR'));
+  }, []);
 
   const checkSlot1 = async () => {
     try {
@@ -2284,7 +2292,6 @@ function OperatorPanel() {
       setSlot1Status(d.status);
     } catch { setSlot1Status('ERROR'); }
   };
-
   const startSlot1 = async () => {
     setStarting(true);
     try {
@@ -2294,7 +2301,6 @@ function OperatorPanel() {
     } catch { setSlot1Status('ERROR'); }
     setStarting(false);
   };
-
   const verifyContract = async () => {
     if (!filePath.trim()) { setShowInput(true); return; }
     setVerifying(true);
@@ -2312,7 +2318,6 @@ function OperatorPanel() {
     }
     setVerifying(false);
   };
-
   const getNextAction = async () => {
     try {
       const r = await fetch('/api/operator/next-action');
@@ -2320,7 +2325,6 @@ function OperatorPanel() {
       setNextAction(d.next_steps);
     } catch { setNextAction(['Could not load next steps.']); }
   };
-
   const verdictColor = (v) => {
     if (!v) return 'var(--text-dim)';
     if (v === 'PASS') return 'var(--accent-green)';
@@ -2328,11 +2332,29 @@ function OperatorPanel() {
     if (v === 'L1_PASS_L2_PENDING') return 'var(--accent-amber)';
     return 'var(--accent-amber)';
   };
-
+  const statusColor = (s) => {
+    if (s === 'UP') return 'var(--accent-green)';
+    if (s === 'ERROR') return 'var(--accent-red)';
+    return 'var(--text-dim)';
+  };
   return e('div', { style: { marginTop: 8 } },
     e('div', { className: 'deck-section-label' }, '▸ Operator'),
+    e('div', {
+      style: {
+        fontSize: 9, fontFamily: 'var(--mono)', marginBottom: 6,
+        display: 'flex', gap: 12
+      }
+    },
+      e('span', null,
+        'Flask: ',
+        e('span', { style: { color: statusColor(flaskStatus) } }, flaskStatus || '…')
+      ),
+      e('span', null,
+        'Slot 1: ',
+        e('span', { style: { color: statusColor(slot1Status) } }, slot1Status || '…')
+      )
+    ),
     e('div', { className: 'deck-grid cols-2', style: { marginBottom: 6 } },
-
       e('button', {
         className: 'dk dk-amber',
         style: { fontSize: 11, padding: '10px 6px' },
@@ -2341,10 +2363,9 @@ function OperatorPanel() {
         e('div', { style: { fontSize: 14 } }, '⚙'),
         e('div', null, 'Slot 1 Health'),
         slot1Status && e('div', {
-          style: { fontSize: 9, color: slot1Status === 'UP' ? 'var(--accent-green)' : 'var(--accent-red)', marginTop: 2 }
+          style: { fontSize: 9, color: statusColor(slot1Status), marginTop: 2 }
         }, slot1Status)
       ),
-
       e('button', {
         className: 'dk dk-green',
         style: { fontSize: 10, padding: '6px 4px' },
@@ -2354,7 +2375,6 @@ function OperatorPanel() {
         e('div', { style: { fontSize: 14 } }, '▶'),
         e('div', null, starting ? 'Starting...' : 'Start Slot 1')
       ),
-
       e('button', {
         className: 'dk dk-blue',
         style: { fontSize: 11, padding: '10px 6px' },
@@ -2367,7 +2387,6 @@ function OperatorPanel() {
           style: { fontSize: 9, color: verdictColor(verifyResult.overall), marginTop: 2 }
         }, verifyResult.overall)
       ),
-
       e('button', {
         className: 'dk dk-purple',
         style: { fontSize: 11, padding: '10px 6px' },
@@ -2377,7 +2396,6 @@ function OperatorPanel() {
         e('div', null, 'Next Required Action')
       )
     ),
-
     (showInput || verifyResult) && e('div', { style: { padding: '4px 0' } },
       e('input', {
         type: 'text',
@@ -2391,7 +2409,6 @@ function OperatorPanel() {
         }
       })
     ),
-
     verifyResult && e('div', {
       style: {
         fontSize: 10, padding: '6px 8px', marginTop: 4,
@@ -2409,7 +2426,6 @@ function OperatorPanel() {
       }, 'L2: ' + verifyResult.l2.verdict),
       verifyResult.error && e('div', { style: { color: 'var(--accent-red)' } }, verifyResult.error)
     ),
-
     nextAction && e('div', {
       style: {
         fontSize: 10, padding: '6px 8px', marginTop: 4,
@@ -2421,7 +2437,6 @@ function OperatorPanel() {
     )
   );
 }
-
 // ── Stream Deck Column ────────────────────────────────────────────────────────
 function StreamDeck({ activePanel, goPanel, collapsed, onToggle }) {
 

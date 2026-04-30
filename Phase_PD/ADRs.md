@@ -1,5 +1,5 @@
 # CIS Architecture Decision Records
-Last updated: 2026-04-29
+Last updated: 2026-04-30
 ---
 ## ADR-001 — Qwen2.5-VL-32B is the primary extraction model
 **Status:** Locked
@@ -260,4 +260,9 @@ Storage: /mnt/models (232GB, vde) + /mnt/models2 (228GB, vdf) — second drive a
 ADR-044 establishes the Operator Abstraction Layer as a controlled human interface over the Execution Layer and Verification Layer. Operator controls reduce cognitive load and procedural error by automating repetitive execution mechanics while preserving all state authority, verification gates, logging requirements, artifact identity rules, and human approval boundaries defined by ADR-043 and related contracts.
 
 This decision separates operational interaction from execution law. Buttons and operator controls may trigger legal execution-layer actions but may not bypass orchestration constraints, state transitions, verification requirements, process records, or audit trails. The Operator Abstraction Layer exists to improve developer ergonomics, reduce context-routing overhead, and enable sustainable sequential-runtime operation under constrained hardware conditions without weakening deterministic verification or governance integrity.
+---
+## ADR-045 — Execution Queue Ownership Layer
+**Status:** Locked
+**Decision:** Introduce an Execution Queue Ownership Layer between the Operator Abstraction Layer (ADR-044) and the Execution Layer (ADR-043). This layer owns job intake, serialized single-worker execution, job state tracking, lock ownership, and resumability on restart via the execution_jobs table and a background worker.
+**Rationale:** Operator routes currently execute runtime scripts directly and synchronously with no job tracking, no serialization enforcement, and no resumability. The hardware constraint (single GPU) must be enforced architecturally, not by convention. The queue worker enforces FIFO single-job execution at the DB level via atomic claiming.
 ---
