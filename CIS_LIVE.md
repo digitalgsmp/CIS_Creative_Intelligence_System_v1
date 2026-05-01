@@ -1,13 +1,10 @@
 # CIS_LIVE — Active Scratchpad
 Format: Bullets | 15 lines max | Newest first | Ends with ACTION
 
-## ADR-045 Step 7 — cold start recovery validation — 2026-05-01 22:39 [OPEN]
-Problem: Worker has a _recover_crashed_jobs() function that resets stuck running jobs to queued on startup. Need to validate this works by simulating a crash: manually insert a job with status=running into the DB, restart Flask, confirm the worker resets it to queued on startup. Expected return point: Step 7 complete, proceed to Step 8 (FIFO enforcement validation under load).
+## ADR-045 Step 8 — FIFO enforcement validation under load — 2026-05-01 22:45 [OPEN]
+Problem: Final ADR-045 step. Need to confirm the worker processes jobs in strict FIFO order (priority ASC, id ASC) and that only one job runs at a time. Test by enqueuing multiple jobs rapidly and confirming execution order matches enqueue order. Expected return point: Step 8 complete, ADR-045 fully closed, proceed to ADR-048 Phase 1.
 
-### Round 1 — 2026-05-01 22:44
-[YOU]: The cold start recovery is validated.
-
-### Round 2 — 2026-05-01 22:44
-[RESPONSES]: Simulated crash by inserting job 14 with status=running and no payload into DB. Restarted Flask. Worker logged: "Cold-start recovery: reset 1 stuck job(s) to queued". Worker then claimed and attempted job 14, failing correctly on missing payload — not a recovery defect. Cold start recovery validated end-to-end. Step 7 complete.
+### Round 1 — 2026-05-01 22:49
+[YOU]: ADR-045 is fully closed. All 8 steps verified.
 
 ---
