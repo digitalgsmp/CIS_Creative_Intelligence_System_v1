@@ -1376,12 +1376,20 @@ function SessionPanel({ projectId }) {
   const [completed, setCompleted]     = useState('');
   const [nextSteps, setNextSteps]     = useState('');
   const [notes, setNotes]             = useState('');
+  const [verfStatus, setVerfStatus]   = useState('');
+  const [verfClean, setVerfClean]     = useState(null);
   const [closing, setClosing]         = useState(false);
   const [closeResult, setCloseResult] = useState(null);
   const [recent, setRecent]           = useState([]);
 
   useEffect(() => {
     api.get('/api/session/recent').then(setRecent);
+    api.get('/api/session/verification-status').then(r => {
+      if (r.status_line) {
+        setVerfStatus(r.status_line);
+        setVerfClean(r.clean);
+      }
+    });
   }, []);
 
   const startSession = async () => {
@@ -1396,7 +1404,7 @@ function SessionPanel({ projectId }) {
     if (!focus || !completed || !nextSteps) return;
     if (closeResult?.success) return;
     setClosing(true);
-    const result = await api.post('/api/session/close', { focus, completed, next_steps: nextSteps, notes, project_id: projectId });
+    const result = await api.post('/api/session/close', { focus, completed, next_steps: nextSteps, notes, verification_status: verfStatus, project_id: projectId });
     setCloseResult(result);
     setClosing(false);
     api.get('/api/session/recent').then(setRecent);
@@ -1426,6 +1434,25 @@ function SessionPanel({ projectId }) {
       ),
       e('div', { className:'field-row' },
         e('textarea', { placeholder:'Notes — pending decisions, warnings, deferred context (optional)', value:notes, onChange:ev=>setNotes(ev.target.value), style:taStyle(48), disabled:!!closeResult?.success })
+      ),
+      e('div', { className:'field-row' },
+        e('div', { style:{ fontSize:10, color:'var(--text-dim)', marginBottom:4, display:'flex', alignItems:'center', gap:6 } },
+          'Field 5 — Verification Status',
+          verfClean === true  && e('span', { style:{ color:'var(--accent-green)', fontWeight:600 } }, '● CLEAN'),
+          verfClean === false && e('span', { style:{ color:'var(--accent-red)',   fontWeight:600 } }, '● UNRESOLVED FAILs')
+        ),
+        e('textarea', {
+          placeholder: 'Auto-populated from verification log — edit if needed',
+          value: verfStatus,
+          onChange: ev => setVerfStatus(ev.target.value),
+          style: {
+            ...taStyle(64),
+            borderColor: verfClean === false ? 'var(--accent-red)' : verfClean === true ? 'var(--accent-green)' : undefined,
+            fontFamily: 'var(--mono)',
+            fontSize: 11
+          },
+          disabled: !!closeResult?.success
+        })
       ),
       e('button', {
         className: `btn ${closeResult?.success ? 'btn-success' : 'btn-primary'}`,
