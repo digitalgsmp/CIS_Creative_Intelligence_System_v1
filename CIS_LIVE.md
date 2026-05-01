@@ -7,4 +7,7 @@ Problem: Worker has a _recover_crashed_jobs() function that resets stuck running
 ### Round 1 — 2026-05-01 22:44
 [YOU]: The cold start recovery is validated.
 
+### Round 2 — 2026-05-01 22:44
+[RESPONSES]: Simulated crash by inserting job 14 with status=running and no payload into DB. Restarted Flask. Worker logged: "Cold-start recovery: reset 1 stuck job(s) to queued". Worker then claimed and attempted job 14, failing correctly on missing payload — not a recovery defect. Cold start recovery validated end-to-end. Step 7 complete.
+
 ---
