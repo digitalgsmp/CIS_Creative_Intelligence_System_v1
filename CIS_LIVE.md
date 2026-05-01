@@ -8,4 +8,7 @@ Problem: Problem: Step 4 is constitutionally closed. Step 5 requires adding dash
 [YOU]: ADR-045 Step 5 — PASS.
 The button cycled through queued → PASS exactly as designed. The polling loop worked, the result mapped correctly, and the display updated without any new UI blocks.
 
+### Round 2 — 2026-05-01 21:43
+[RESPONSES]: Dashboard polling implemented surgically. Verify Contract button now enqueues via /api/queue/enqueue, polls /api/queue/job/<id> every 2s, displays queued status during execution, then PASS/FAIL on completion. Tested end-to-end. Step 5 complete.
+
 ---
