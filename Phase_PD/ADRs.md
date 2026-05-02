@@ -1,5 +1,5 @@
 # CIS Architecture Decision Records
-Last updated: 2026-05-01
+Last updated: 2026-05-02
 ---
 ## ADR-001 — Qwen2.5-VL-32B is the primary extraction model
 **Status:** Locked
@@ -270,4 +270,20 @@ This decision separates operational interaction from execution law. Buttons and 
 **Status:** Locked
 **Decision:** Every significant CIS build action must identify and eliminate at least one manual operator action. Builder must produce an AUTOMATION REDUCTION RECORD alongside each Completion Manifest. Missing record blocks verification. Governed by CIS_Automation_Reduction_Contract_v1.md.
 **Rationale:** Manual operator burden has accumulated at every layer of the build. Automation reduction must be a first-class deliverable, not deferred debt. Cognitive load is the target, not keystrokes.
+---
+## ADR-047 — Filesystem Governance and Canonicality
+**Status:** Pre-draft
+**Decision:** Pre-draft scope written. Governs manifest taxonomy, zone classification, archive policy, naming conventions, and files_written schema lock. Not yet locked.
+Status: PRE-DRAFT
+**Rationale:** Manifest namespace collision identified during ADR-045 implementation. Three manifest classes share the bare noun "manifest" without namespace separation. Config constants established as interim fix. files_written polymorphic structure exposed as canonicality risk during run_l2 handler patch. Filesystem zone classification required before broader automation proceeds.
+---
+## ADR-048 — Staged Draft Intake Layer
+**Status:** Pre-draft
+**Decision:** Pre-draft scope written. Governs governed buffer between AI-proposed structured content and canonical CIS records. AI drafts → CIS stages → human approves → runtime commits. Not yet locked. Current primary build target after ADR-045 closure.
+**Rationale:** Named architectural problem identified: "the human is still the API." Human operator is the transport layer between AI-generated structured content and CIS canonical records. This is an architectural gap, not a UX problem. ADR-045 closure unblocks Phase 1 implementation. Four-zone trust model: Downloads (untrusted) → inbox (quarantine) → staging (reviewed candidate) → canonical DB/files (approved truth).
+---
+## ADR-049 — Primer Update Governance Contract — Constitutional Memory Governance Law
+**Status:** Locked
+**Decision:** Establishes CIS_Primer_Update_Governance_Contract_v1.md as the governing law for all primer file updates. Primer files are now constitutional institutional memory, not documentation. Updates are governed state transitions requiring: Architect generation, independent Verifier review, Human Gate approval, and atomic apply via primer_update_v2.py. No single model may canonize its own interpretation without independent review. Defines four roles (Architect, Verifier, Human Gate, Runtime Executor), six update cycle failure states, artifact immutability rules, and future orchestration compliance constraints. Reviewed by ChatGPT over three passes before lock.
+**Rationale:** Establishes CIS_Primer_Update_Governance_Contract_v1.md as the governing law for all primer file updates. Primer files are now constitutional institutional memory, not documentation. Updates are governed state transitions requiring: Architect generation, independent Verifier review, Human Gate approval, and atomic apply via primer_update_v2.py. No single model may canonize its own interpretation without independent review. Defines four roles (Architect, Verifier, Human Gate, Runtime Executor), six update cycle failure states, artifact immutability rules, and future orchestration compliance constraints. Reviewed by ChatGPT over three passes before lock.
 ---

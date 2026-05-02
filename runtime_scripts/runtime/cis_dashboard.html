@@ -2300,6 +2300,8 @@ function OperatorPanel() {
   const [flaskStatus,  setFlaskStatus]  = useState(null);
   const [verifyResult, setVerifyResult] = useState(null);
   const [verifying,    setVerifying]    = useState(false);
+  const [jobId,        setJobId]        = useState(null);
+  const [jobStatus,    setJobStatus]    = useState(null);
   const [starting,     setStarting]     = useState(false);
   const [nextAction,   setNextAction]   = useState(null);
   const [filePath,     setFilePath]     = useState('');
@@ -2328,22 +2330,49 @@ function OperatorPanel() {
     } catch { setSlot1Status('ERROR'); }
     setStarting(false);
   };
-  const verifyContract = async () => {
+ const verifyContract = async () => {
     if (!filePath.trim()) { setShowInput(true); return; }
     setVerifying(true);
     setVerifyResult(null);
+    setJobId(null);
+    setJobStatus(null);
     try {
-      const r = await fetch('/api/operator/verify-contract', {
+      const r = await fetch('/api/queue/enqueue', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ file_path: filePath.trim() })
+        body: JSON.stringify({
+          job_type: 'verify_contract',
+          source: 'operator_panel',
+          payload: JSON.stringify({ contract_path: filePath.trim() })
+        })
       });
       const d = await r.json();
-      setVerifyResult(d);
+      if (!d.success) { setVerifyResult({ overall: 'ERROR', error: d.error }); setVerifying(false); return; }
+      const jid = d.job_id;
+      setJobId(jid);
+      setJobStatus('queued');
+      const poll = setInterval(async () => {
+        try {
+          const pr = await fetch('/api/queue/job/' + jid);
+          const pd = await pr.json();
+          const status = pd.job && pd.job.status;
+          setJobStatus(status);
+          if (status === 'complete' || status === 'failed') {
+            clearInterval(poll);
+            setVerifying(false);
+            const result = pd.job && pd.job.result ? JSON.parse(pd.job.result) : {};
+            setVerifyResult({
+              overall: result.passed ? 'PASS' : 'FAIL',
+              l1: { verdict: result.passed ? 'PASS' : 'FAIL' },
+              error: result.stderr || null
+            });
+          }
+        } catch { clearInterval(poll); setVerifying(false); setVerifyResult({ overall: 'ERROR', error: 'Poll failed' }); }
+      }, 2000);
     } catch (err) {
       setVerifyResult({ overall: 'ERROR', error: err.message });
+      setVerifying(false);
     }
-    setVerifying(false);
   };
   const getNextAction = async () => {
     try {
@@ -2409,7 +2438,7 @@ function OperatorPanel() {
         disabled: verifying
       },
         e('div', { style: { fontSize: 14 } }, '✓'),
-        e('div', null, verifying ? 'Verifying...' : 'Verify Contract'),
+        e('div', null, verifying ? ('Verifying' + (jobStatus ? ' [' + jobStatus + ']' : '...')) : 'Verify Contract'),
         verifyResult && e('div', {
           style: { fontSize: 9, color: verdictColor(verifyResult.overall), marginTop: 2 }
         }, verifyResult.overall)
