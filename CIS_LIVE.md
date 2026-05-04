@@ -74,4 +74,101 @@ ARCHITECTURAL ISSUE: The main ambiguity is that zone and status overlap. Zone sh
 
 RECOMMENDATION: Proceed after revising the schema to separate zone, lifecycle, approval, and commit provenance more explicitly.
 
+### Round 3 — 2026-05-04 03:03
+[YOU]: Does this revised schema resolve all seven required changes from the Round 1 audit? Is it now ready for implementation?
+
+[Claude]: Clean audit. All seven flags are valid. Here's the revised schema incorporating every required change:
+sqlCREATE TABLE IF NOT EXISTS drafts (
+    id                  INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    -- Classification
+    draft_type          TEXT NOT NULL CHECK(draft_type IN (
+                            'adr', 'knowledge_record', 'session_field',
+                            'conflict', 'manifest', 'primer_update', 'config_patch'
+                        )),
+    payload_format      TEXT NOT NULL DEFAULT 'json' CHECK(payload_format IN (
+                            'json', 'markdown', 'text', 'structured'
+                        )),
+    schema_version      TEXT NOT NULL DEFAULT '1.0',
+
+    -- Trust zone (location in four-zone model)
+    zone                TEXT NOT NULL DEFAULT 'inbox' CHECK(zone IN (
+                            'downloads', 'inbox', 'staging', 'canonical'
+                        )),
+
+    -- Lifecycle status (independent of zone)
+    status              TEXT NOT NULL DEFAULT 'inbox' CHECK(status IN (
+                            'inbox', 'staged', 'pending_review',
+                            'approved', 'rejected', 'committed',
+                            'superseded', 'archived'
+                        )),
+
+    -- Provenance
+    source_model        TEXT CHECK(source_model IN (
+                            'claude', 'chatgpt', 'gemini', 'local', 'human'
+                        )),
+    source_session      TEXT,
+    filename            TEXT,
+    imported_by         TEXT,
+    checksum            TEXT UNIQUE,
+
+    -- Payload
+    payload             TEXT NOT NULL,
+    proposed_target     TEXT,
+
+    -- Supersession chain (bidirectional)
+    supersedes_id       INTEGER REFERENCES drafts(id),
+    superseded_by       INTEGER REFERENCES drafts(id),
+
+    -- Approval gate
+    approved_by         TEXT,
+    approved_at         TEXT,
+
+    -- Rejection
+    rejected_by         TEXT,
+    rejected_at         TEXT,
+    rejection_reason    TEXT,
+
+    -- Commit provenance (distinct from approval)
+    committed_by        TEXT,
+    committed_at        TEXT,
+    commit_result       TEXT,
+    canonical_record_id TEXT,
+
+    -- Timestamps
+    created_at          TEXT NOT NULL DEFAULT (datetime('now')),
+    updated_at          TEXT NOT NULL DEFAULT (datetime('now'))
+);
+Key resolutions:
+
+status DEFAULT 'inbox' — zone and status now start aligned; staging is a deliberate promotion, not a default
+CHECK constraints on draft_type, zone, status, payload_format, source_model — no invalid governance states possible
+committed_by / committed_at / commit_result / canonical_record_id — approval and commit are now fully distinct
+supersedes_id added — bidirectional chain, draft knows both what it replaces and what replaced it
+checksum UNIQUE — duplicate staged drafts blocked at DB layer
+imported_by — human import provenance captured
+payload_format + schema_version — runtime knows how to validate payload before processing
+
+[ChatGPT]: VERDICT: PASS
+
+CHECKS:
+
+Four-zone trust model represented cleanly: YES
+Seven draft types constrained: YES
+Lifecycle constrained and separated from zone: YES
+Human approval gate preserved: YES
+Approval and commit separated: YES
+Provenance captured: YES
+Supersession chain supported: YES
+Duplicate protection included: YES
+
+WARNINGS:
+
+checksum UNIQUE may reject intentional duplicate imports unless the endpoint handles duplicate detection gracefully.
+zone='canonical' plus status!='committed' should be prevented in application logic or future triggers.
+updated_at will not auto-update unless handled by endpoint logic or trigger.
+
+RECOMMENDATION:
+Accept schema for ADR-048 Phase 1 Step 1 and proceed to implementation with endpoint-level transition validation.
+
 ---
