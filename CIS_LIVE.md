@@ -198,4 +198,13 @@ or, if ADR-045 used a specific migration script naming convention, follow that e
 
 Important note: the uploaded 2_CIS_REORIENTATION.md is stale against the current primer/handoff because it still says ADR-045 is partially implemented, while the current primer says ADR-045 is fully closed. Use the primer/handoff as current operational truth for ADR-048.
 
+### Round 5 — 2026-05-04 03:21
+[YOU]: ADR-048 Phase 1 — Step 2: /api/drafts/stage endpoint
+Before I draft the code, confirm two things:
+
+What is the canonical Flask API file structure? Is this going into api/drafts.py as a new Blueprint, or appending to an existing file?
+Is the drafts table being added to cis_memory.db via a migration script, or does CIS have a schema init pattern we should follow?
+
+If you have the relevant file paths or want me to check project knowledge for the existing API pattern, say the word.
+
 ---
