@@ -171,4 +171,31 @@ updated_at will not auto-update unless handled by endpoint logic or trigger.
 RECOMMENDATION:
 Accept schema for ADR-048 Phase 1 Step 1 and proceed to implementation with endpoint-level transition validation.
 
+### Round 4 — 2026-05-04 03:21
+[ChatGPT]: Use this answer back to Claude:
+
+1. API file structure
+
+Use a new Blueprint:
+/mnt/projects/cis/runtime/api/drafts.py
+
+Reason: current runtime already separates API concerns into api/operator.py, api/session.py, api/queue.py, and api/live.py; /api/drafts/stage is explicitly listed as a not-yet-built ADR-048 component, not an extension of an existing route family.
+
+Register it in canonical Flask entry point:
+/mnt/projects/cis/runtime/app.py
+
+2. drafts table creation
+
+Use a migration/init script pattern parallel to ADR-045 Step 1, not inline table creation inside the endpoint.
+
+Reason: cis_memory.db is canonical DB authority, and the drafts DB table is a distinct ADR-048 Phase 1 build item before the endpoint.
+
+Recommended path:
+
+/mnt/projects/cis/runtime/init_drafts_table.py
+
+or, if ADR-045 used a specific migration script naming convention, follow that exact convention after checking runtime.
+
+Important note: the uploaded 2_CIS_REORIENTATION.md is stale against the current primer/handoff because it still says ADR-045 is partially implemented, while the current primer says ADR-045 is fully closed. Use the primer/handoff as current operational truth for ADR-048.
+
 ---
