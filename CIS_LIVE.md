@@ -496,4 +496,7 @@ except Exception as e leaks raw runtime error strings to API response.
 RECOMMENDATION:
 Fix timestamp formatting, register the Blueprint, and add supersession legality validation before advancing ADR-048 Step 2 to PASS.
 
+### Round 7 — 2026-05-04 03:36
+[YOU]: Does this /api/drafts/stage implementation correctly implement the ADR-048 Phase 1 staging contract? Does it enforce the zone/status separation, duplicate detection, supersession chain, and the three endpoint-layer warnings from the schema audit? There is one known issue to flag to ChatGPT: _now() has a typo (%Human:%M:%S — should be %H:%M:%S). Flag it as a known defect so the audit catches it cleanly.
+
 ---
