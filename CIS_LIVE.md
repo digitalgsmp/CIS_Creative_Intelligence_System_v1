@@ -207,4 +207,293 @@ Is the drafts table being added to cis_memory.db via a migration script, or does
 
 If you have the relevant file paths or want me to check project knowledge for the existing API pattern, say the word.
 
+### Round 6 — 2026-05-04 03:25
+[Claude]: """
+api/drafts.py — ADR-048 Staged Draft Intake Layer
+Blueprint: /api/drafts/
+ADR: ADR-048
+"""
+
+import hashlib
+from datetime import datetime, timezone
+
+from flask import Blueprint, request, jsonify
+from db.connection import db_connect, ensure_drafts_tables
+
+drafts_bp = Blueprint('drafts', __name__, url_prefix='/api/drafts')
+
+VALID_DRAFT_TYPES = {
+    'adr', 'knowledge_record', 'session_field',
+    'conflict', 'manifest', 'primer_update', 'config_patch'
+}
+
+VALID_FORMATS = {'json', 'markdown', 'text', 'structured'}
+
+VALID_MODELS = {'claude', 'chatgpt', 'gemini', 'local', 'human'}
+
+# Zone/status legal combinations at staging boundary.
+# Expanded when approve/commit routes are built.
+LEGAL_ENTRY_STATES = {
+    ('inbox', 'inbox'),
+}
+
+
+def _now():
+    return datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
+
+
+def _compute_checksum(payload: str) -> str:
+    return hashlib.sha256(payload.encode('utf-8')).hexdigest()
+
+
+def _validate_transition(zone: str, status: str) -> tuple[bool, str]:
+    """
+    Validate zone/status combination at staging boundary.
+    canonical zone is only reachable via committed status.
+    Expanded as approve/commit routes are added.
+    """
+    if zone == 'canonical' and status != 'committed':
+        return False, "zone='canonical' requires status='committed'"
+    if status == 'committed' and zone != 'canonical':
+        return False, "status='committed' requires zone='canonical'"
+    return True, ''
+
+
+def _validate_supersession(conn, supersedes_id: int, new_draft_id_placeholder) -> tuple[bool, str]:
+    """
+    Validate supersession legality before marking old draft superseded.
+    Rules:
+      - Target must exist
+      - Target must not already be superseded
+      - Target must not be committed
+      - Self-supersession is impossible (new draft not yet inserted, checked by caller)
+    """
+    target = conn.execute(
+        'SELECT id, status FROM drafts WHERE id = ?', (supersedes_id,)
+    ).fetchone()
+
+    if not target:
+        return False, f'supersedes_id {supersedes_id} does not exist'
+    if target['status'] == 'superseded':
+        return False, f'Draft {supersedes_id} is already superseded and cannot be replaced again'
+    if target['status'] == 'committed':
+        return False, f'Draft {supersedes_id} is committed and cannot be superseded'
+    return True, ''
+
+
+@drafts_bp.before_app_request
+def init_drafts():
+    """Ensure drafts table exists. Transitional — acceptable for Phase 1."""
+    conn = db_connect()
+    ensure_drafts_tables(conn)
+    conn.close()
+
+
+@drafts_bp.route('/stage', methods=['POST'])
+def stage_draft():
+    """
+    Stage an AI-proposed draft into the intake buffer.
+
+    Required fields:
+        draft_type      — one of seven ADR-048 draft types
+        payload         — the proposed content (string)
+
+    Optional fields:
+        payload_format  — default 'json'
+        source_model    — model that produced this draft
+        source_session  — CIS Live session ID or label
+        filename        — originating filename if applicable
+        imported_by     — human operator identifier
+        proposed_target — intended commit destination
+        supersedes_id   — draft ID this replaces (integer)
+    """
+    data = request.get_json(silent=True)
+    if not data:
+        return jsonify({'error': 'Request body must be JSON'}), 400
+
+    draft_type = data.get('draft_type', '').strip()
+    payload = data.get('payload', '')
+
+    if draft_type not in VALID_DRAFT_TYPES:
+        return jsonify({
+            'error': f'Invalid draft_type. Must be one of: {sorted(VALID_DRAFT_TYPES)}'
+        }), 400
+
+    if not payload or not isinstance(payload, str) or not payload.strip():
+        return jsonify({'error': 'payload is required and must be a non-empty string'}), 400
+
+    payload_format = data.get('payload_format', 'json')
+    if payload_format not in VALID_FORMATS:
+        return jsonify({
+            'error': f'Invalid payload_format. Must be one of: {sorted(VALID_FORMATS)}'
+        }), 400
+
+    source_model = data.get('source_model')
+    if source_model and source_model not in VALID_MODELS:
+        return jsonify({
+            'error': f'Invalid source_model. Must be one of: {sorted(VALID_MODELS)}'
+        }), 400
+
+    # Staging entry point always starts at inbox/inbox
+    zone, status = 'inbox', 'inbox'
+    valid, reason = _validate_transition(zone, status)
+    if not valid:
+        return jsonify({'error': f'Transition validation failed: {reason}'}), 400
+
+    checksum = _compute_checksum(payload)
+    now = _now()
+    supersedes_id = data.get('supersedes_id')
+
+    # Validate supersedes_id type if provided
+    if supersedes_id is not None:
+        if not isinstance(supersedes_id, int):
+            return jsonify({'error': 'supersedes_id must be an integer'}), 400
+
+    conn = db_connect()
+    try:
+        # Duplicate detection
+        existing = conn.execute(
+            'SELECT id, status, zone FROM drafts WHERE checksum = ?', (checksum,)
+        ).fetchone()
+        if existing:
+            return jsonify({
+                'status': 'duplicate',
+                'message': 'An identical draft already exists in the intake buffer.',
+                'existing_draft_id': existing['id'],
+                'existing_status': existing['status'],
+                'existing_zone': existing['zone']
+            }), 409
+
+        # Supersession legality validation before insert
+        if supersedes_id is not None:
+            valid, reason = _validate_supersession(conn, supersedes_id, None)
+            if not valid:
+                return jsonify({'error': f'Supersession validation failed: {reason}'}), 400
+
+        cursor = conn.execute("""
+            INSERT INTO drafts (
+                draft_type, payload_format, schema_version,
+                zone, status,
+                source_model, source_session, filename,
+                imported_by, checksum,
+                payload, proposed_target,
+                supersedes_id,
+                created_at, updated_at
+            ) VALUES (
+                ?, ?, '1.0',
+                'inbox', 'inbox',
+                ?, ?, ?,
+                ?, ?,
+                ?, ?,
+                ?,
+                ?, ?
+            )
+        """, (
+            draft_type, payload_format,
+            source_model,
+            data.get('source_session'),
+            data.get('filename'),
+            data.get('imported_by'),
+            checksum,
+            payload,
+            data.get('proposed_target'),
+            supersedes_id,
+            now, now
+        ))
+        conn.commit()
+        draft_id = cursor.lastrowid
+
+        # Mark superseded draft — legality already confirmed above
+        if supersedes_id is not None:
+            conn.execute("""
+                UPDATE drafts
+                SET superseded_by = ?, status = 'superseded', updated_at = ?
+                WHERE id = ?
+            """, (draft_id, now, supersedes_id))
+            conn.commit()
+
+        return jsonify({
+            'status': 'staged',
+            'draft_id': draft_id,
+            'zone': 'inbox',
+            'checksum': checksum,
+            'created_at': now
+        }), 201
+
+    except Exception as e:
+        conn.rollback()
+        return jsonify({'error': 'Staging failed — see server log'}), 500
+    finally:
+        conn.close()
+
+[ChatGPT]: VERDICT: REVIEW — ARCHITECTURALLY SOUND, 4 REQUIRED FIXES BEFORE PASS
+
+CHECKS:
+
+ADR-048 staging contract directionally correct: YES
+Four-zone trust model represented: YES
+Zone/status separation preserved: YES
+Duplicate detection handled gracefully: YES
+Supersession chain implemented: PARTIAL
+Human approval gate preserved: YES
+Direct canonical mutation prevented: YES
+Endpoint-layer warnings addressed: PARTIAL
+
+PASSING ELEMENTS:
+
+zone and status are independently controlled and not inferred from each other.
+Duplicate checksum handling correctly returns structured 409 response instead of raw DB failure.
+Draft creation defaults to inbox/inbox rather than silently staging. Correct ADR-048 behavior.
+Human approval/commit fields are untouched by this endpoint. Correct separation of responsibilities.
+Blueprint registration pattern is correct and consistent with current CIS modular API architecture.
+
+REQUIRED FIXES:
+
+CRITICAL — _now() timestamp bug
+Current:
+'%Y-%m-%d %Human:%M:%S'
+
+Must be:
+
+'%Y-%m-%d %H:%M:%S'
+
+Current implementation corrupts provenance timestamps.
+
+CRITICAL — drafts_bp never registered
+app.py imports drafts_bp but does not register it.
+Missing:
+app.register_blueprint(drafts_bp)
+
+Without this, /api/drafts/stage does not exist operationally.
+
+SUPERSESSION INTEGRITY GAP
+Current code updates the old draft to:
+status = 'superseded'
+
+but does NOT validate:
+
+target draft exists
+target draft is not already superseded
+target draft is not committed
+self-supersession impossible
+
+Current implementation allows illegal replacement chains.
+
+ZONE/STATUS GOVERNANCE GAP
+The endpoint preserves separation structurally, but no transition validation exists yet.
+Currently possible through future update endpoints:
+zone='canonical' with status='rejected'
+status='committed' while still in zone='inbox'
+
+Not a blocker for initial staging endpoint, but MUST be enforced before approve/commit routes exist.
+
+WARNINGS:
+
+before_app_request runs ensure_drafts_tables() on every request globally. Operationally acceptable for Phase 1, but transitional/inefficient.
+payload checksum hashes raw string only. Equivalent JSON with different whitespace/order hashes differently.
+except Exception as e leaks raw runtime error strings to API response.
+
+RECOMMENDATION:
+Fix timestamp formatting, register the Blueprint, and add supersession legality validation before advancing ADR-048 Step 2 to PASS.
+
 ---
