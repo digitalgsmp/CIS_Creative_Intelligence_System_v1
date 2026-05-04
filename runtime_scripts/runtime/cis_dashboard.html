@@ -2493,6 +2493,178 @@ function OperatorPanel() {
     )
   );
 }
+// ── Draft Intake Panel — ADR-048 Phase 1 ─────────────────────────────────────
+function DraftIntakePanel() {
+  const [drafts, setDrafts]           = React.useState([]);
+  const [loading, setLoading]         = React.useState(false);
+  const [selected, setSelected]       = React.useState(null);
+  const [actionMsg, setActionMsg]     = React.useState(null);
+  const [operator, setOperator]       = React.useState('eric');
+
+  const statusColor = (s) => {
+    if (s === 'approved')  return 'var(--accent-green)';
+    if (s === 'rejected')  return 'var(--accent-red)';
+    if (s === 'staged')    return 'var(--accent-blue)';
+    if (s === 'committed') return 'var(--accent-green)';
+    if (s === 'superseded') return 'var(--text-dim)';
+    return 'var(--text-secondary)';
+  };
+
+  const loadDrafts = async () => {
+    setLoading(true);
+    try {
+      const r = await fetch('/api/drafts/list');
+      const d = await r.json();
+      setDrafts(Array.isArray(d) ? d : []);
+    } catch(err) {
+      setDrafts([]);
+    }
+    setLoading(false);
+  };
+
+  const applyAction = async (draft_id, action, extra={}) => {
+    setActionMsg(null);
+    try {
+      const r = await fetch('/api/drafts/' + draft_id + '/action', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action, operator, ...extra })
+      });
+      const d = await r.json();
+      if (r.ok) {
+        setActionMsg({ ok: true, text: 'Draft ' + draft_id + ' → ' + d.status });
+        setSelected(null);
+        loadDrafts();
+      } else {
+        setActionMsg({ ok: false, text: d.error || 'Action failed' });
+      }
+    } catch(err) {
+      setActionMsg({ ok: false, text: 'Request failed' });
+    }
+  };
+
+  React.useEffect(() => { loadDrafts(); }, []);
+
+  const sel = selected ? drafts.find(d => d.id === selected) : null;
+
+  return e('div', { style: { marginTop: 8 } },
+    e('div', { className: 'deck-section-label' }, '▸ Draft Intake'),
+
+    // Refresh + operator field
+    e('div', { style: { display: 'flex', gap: 6, marginBottom: 6, alignItems: 'center' } },
+      e('input', {
+        type: 'text',
+        value: operator,
+        onChange: ev => setOperator(ev.target.value),
+        placeholder: 'operator',
+        style: {
+          flex: 1, fontSize: 10, padding: '3px 6px',
+          background: 'var(--bg-raised)', border: '1px solid var(--border)',
+          color: 'var(--text-primary)', borderRadius: 3, fontFamily: 'var(--mono)'
+        }
+      }),
+      e('button', {
+        className: 'dk dk-blue',
+        style: { fontSize: 10, padding: '4px 8px' },
+        onClick: loadDrafts,
+        disabled: loading
+      }, loading ? '…' : '↻ Refresh')
+    ),
+
+    // Draft list
+    drafts.length === 0
+      ? e('div', {
+          style: {
+            fontSize: 10, color: 'var(--text-dim)', fontFamily: 'var(--mono)',
+            padding: '6px 0'
+          }
+        }, loading ? 'Loading…' : 'No staged drafts.')
+      : e('div', { style: { display: 'flex', flexDirection: 'column', gap: 4, marginBottom: 6 } },
+          drafts.map(d =>
+            e('div', {
+              key: d.id,
+              onClick: () => setSelected(selected === d.id ? null : d.id),
+              style: {
+                fontSize: 10, padding: '5px 8px', borderRadius: 3, cursor: 'pointer',
+                background: selected === d.id ? 'var(--bg-raised)' : 'transparent',
+                border: '1px solid ' + (selected === d.id ? 'var(--accent-blue)' : 'var(--border)'),
+                fontFamily: 'var(--mono)'
+              }
+            },
+              e('div', { style: { display: 'flex', justifyContent: 'space-between' } },
+                e('span', { style: { color: 'var(--text-primary)' } },
+                  '#' + d.id + ' ' + d.draft_type),
+                e('span', { style: { color: statusColor(d.status) } }, d.status)
+              ),
+              e('div', { style: { color: 'var(--text-dim)', fontSize: 9, marginTop: 2 } },
+                d.zone + ' · ' + (d.source_model || 'unknown') + ' · ' + d.created_at)
+            )
+          )
+        ),
+
+    // Selected draft action bar
+    sel && e('div', {
+      style: {
+        padding: '6px 8px', background: 'var(--bg-raised)',
+        border: '1px solid var(--border)', borderRadius: 3, marginBottom: 4
+      }
+    },
+      e('div', {
+        style: { fontSize: 9, fontFamily: 'var(--mono)',
+                 color: 'var(--text-secondary)', marginBottom: 5 }
+      },
+        'Draft #' + sel.id + ' — ' + sel.draft_type +
+        (sel.proposed_target ? ' → ' + sel.proposed_target : '')
+      ),
+      e('div', { className: 'deck-grid cols-2', style: { gap: 4 } },
+        e('button', {
+          className: 'dk dk-green',
+          style: { fontSize: 10, padding: '6px 4px' },
+          onClick: () => applyAction(sel.id, 'approve')
+        },
+          e('div', { style: { fontSize: 12 } }, '✓'),
+          e('div', null, 'Approve')
+        ),
+        e('button', {
+          className: 'dk dk-amber',
+          style: { fontSize: 10, padding: '6px 4px' },
+          onClick: () => applyAction(sel.id, 'reject',
+            { reason: 'Rejected via dashboard' })
+        },
+          e('div', { style: { fontSize: 12 } }, '✕'),
+          e('div', null, 'Reject')
+        ),
+        e('button', {
+          className: 'dk dk-purple',
+          style: { fontSize: 10, padding: '6px 4px' },
+          onClick: () => applyAction(sel.id, 'archive')
+        },
+          e('div', { style: { fontSize: 12 } }, '▣'),
+          e('div', null, 'Archive')
+        ),
+        e('button', {
+          className: 'dk',
+          style: { fontSize: 10, padding: '6px 4px' },
+          onClick: () => setSelected(null)
+        },
+          e('div', { style: { fontSize: 12 } }, '↩'),
+          e('div', null, 'Deselect')
+        )
+      )
+    ),
+
+    // Action result message
+    actionMsg && e('div', {
+      style: {
+        fontSize: 10, padding: '4px 8px', marginTop: 4, borderRadius: 3,
+        fontFamily: 'var(--mono)',
+        background: 'var(--bg-raised)',
+        border: '1px solid ' + (actionMsg.ok ? 'var(--accent-green)' : 'var(--accent-red)'),
+        color: actionMsg.ok ? 'var(--accent-green)' : 'var(--accent-red)'
+      }
+    }, actionMsg.text)
+  );
+}
 // ── Stream Deck Column ────────────────────────────────────────────────────────
 function StreamDeck({ activePanel, goPanel, collapsed, onToggle }) {
 
@@ -2612,7 +2784,7 @@ function StreamDeck({ activePanel, goPanel, collapsed, onToggle }) {
 
       // ── Operator ─────────────────────────────────────────────────
       e(OperatorPanel, null)
-
+      e(DraftIntakePanel, null)
     )
   );
 }
