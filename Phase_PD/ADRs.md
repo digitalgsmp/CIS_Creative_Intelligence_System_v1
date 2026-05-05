@@ -1,5 +1,5 @@
 # CIS Architecture Decision Records
-Last updated: 2026-05-04
+Last updated: 2026-05-05
 ---
 ## ADR-001 — Qwen2.5-VL-32B is the primary extraction model
 **Status:** Locked
