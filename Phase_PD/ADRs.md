@@ -278,7 +278,7 @@ Status: PRE-DRAFT
 **Rationale:** Manifest namespace collision identified during ADR-045 implementation. Three manifest classes share the bare noun "manifest" without namespace separation. Config constants established as interim fix. files_written polymorphic structure exposed as canonicality risk during run_l2 handler patch. Filesystem zone classification required before broader automation proceeds.
 ---
 ## ADR-048 — Staged Draft Intake Layer
-**Status:** Pre-draft
+**Status:** Locked
 **Decision:** Pre-draft scope written. Governs governed buffer between AI-proposed structured content and canonical CIS records. AI drafts → CIS stages → human approves → runtime commits. Not yet locked. Current primary build target after ADR-045 closure.
 **Rationale:** Named architectural problem identified: "the human is still the API." Human operator is the transport layer between AI-generated structured content and CIS canonical records. This is an architectural gap, not a UX problem. ADR-045 closure unblocks Phase 1 implementation. Four-zone trust model: Downloads (untrusted) → inbox (quarantine) → staging (reviewed candidate) → canonical DB/files (approved truth).
 ---
